@@ -12,7 +12,7 @@ import { client as urqlClient } from './graphql'
 import RootLayout from './layouts/RootLayout.tsx'
 import ErrorPage from './ErrorPage.tsx'
 import HomePage from './pages/HomePage.tsx'
-import LoginExcludedRoute from './components/LoginExcludedRoute'
+import LoginExcludedRoute from './components/auth/LoginExcludedRoute.tsx'
 import {
   QueryClient,
   QueryClientProvider,

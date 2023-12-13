@@ -9,7 +9,7 @@ import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
 import { Dialog } from 'primereact/dialog';
 import { useMutation } from "@tanstack/react-query";
-import UserProfilePhotoPicker from "../components/UserProfilePhotoPIcker";
+import UserProfilePhotoPicker from "../components/auth/UserProfilePhotoPIcker";
 
 const ProfilePage = observer(() => {
   const auth = useContext(AuthContext)

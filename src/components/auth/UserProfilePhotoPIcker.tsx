@@ -1,6 +1,6 @@
 import { observer } from "mobx-react-lite"
 import { useContext, useState, useRef } from "react"
-import { AuthContext } from "../stores/stores"
+import { AuthContext } from "../../stores/stores"
 import { Image } from 'primereact/image'
 import { Button } from 'primereact/button'
 import { Toast } from 'primereact/toast';
