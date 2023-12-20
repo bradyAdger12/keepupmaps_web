@@ -9,7 +9,7 @@ import _ from 'lodash'
 import { colors, stateAbbreviation } from "../../lib/Constants";
 import { Dialog } from "primereact/dialog";
 import { InputTextarea } from "primereact/inputtextarea";
-const TerritoryAdmin = observer(({ onTerritorySelected, downloadInProgress, map }: { onTerritorySelected: (arg0: Territory) => void, downloadInProgress: boolean, map?: mapboxgl.Map }) => {
+const TerritoryAdmin = observer(({ onTerritorySelected, downloadInProgress, map }: { onTerritorySelected: (arg0: Territory) => void, downloadInProgress: boolean, map?: mapboxgl.Map | null }) => {
   const territoryStore = useContext(TerritoryContext)
   const stateStore = useContext(StateContext)
   const [territoryInputText, setTerritoryInputText] = useState('')
