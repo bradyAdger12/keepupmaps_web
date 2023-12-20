@@ -1,0 +1,7 @@
+version: '3.7'
+services:
+  clientmap_connect:
+    image: my-react-app
+    restart: always
+    ports:
+      - '3002:3000'
