@@ -50,14 +50,14 @@ const TerritoryAdmin = observer(({ onTerritorySelected, downloadInProgress }: { 
   }, [territoryStore.territories])
   const TerritoryItem = (territory: Territory) => {
     if (!territory) {
-      return <div></div>
+      return <></>
     }
     return (
       <div onClick={() => setSelectedTerritory(territory)} className={`cursor-pointer items-center p-3  ${(selectedTerritory?.name === territory.name && !downloadInProgress) && 'bg-gray-100 rounded-md border-solid border-blue-200 border-2'}`}>
         <div className="flex flex-wrap items-center">
           <div className="font-bold flex-initial mr-2" style={{ fontSize: 30 }}>{territory.name}</div>
-          <div className="flex-1">
-            ({stateStore.states.filter((state) => state.territoryId === territory.id).map((item, index) => <><span className="state-abbr" onClick={(e) => { e.stopPropagation() }}>{stateAbbreviation[item.name! as keyof typeof stateAbbreviation]}</span><span>{index !== stateStore.states.filter((state) => state.territoryId === territory.id).length - 1 && ', '}</span></>)})
+          <div className="flex-1 mr-2">
+            <div className="flex flex-wrap">({stateStore.states.filter((state) => state.territoryId === territory.id).map((item, index) => <div key={item.id} className="flex-initial"><span className="state-abbr" onClick={(e) => { e.stopPropagation() }}>{stateAbbreviation[item.name! as keyof typeof stateAbbreviation]}</span><span>{index !== stateStore.states.filter((state) => state.territoryId === territory.id).length - 1 && ', '}</span></div>)})</div>
           </div>
           <div className="flex-initial rounded-md" style={{ backgroundColor: territory.color, width: 30, height: 30 }} />
           <div className="flex-initial ml-2" onClick={(e) => { e.stopPropagation(); onTerritoryClick(territory) }}><Button icon="pi pi-pencil" className="bg-transparent" outlined rounded text size="small" /></div>
@@ -88,7 +88,7 @@ const TerritoryAdmin = observer(({ onTerritorySelected, downloadInProgress }: { 
         </div>
         }
         <div className="mt-10">
-          {territories && territories.length > 0 && territories.map((item: Territory) => TerritoryItem(item))}
+          {territories && territories.length > 0 && territories.map((item: Territory) => <div key={item.id}>{TerritoryItem(item)}</div>)}
         </div>
       </div>
       <Dialog closeIcon="pi pi-times" header={territoryToEdit?.name} className="m-10" visible={noteDialogOpen} style={{ width: '50vw' }} onHide={() => setNoteDialogOpen(false)}>

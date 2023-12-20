@@ -48,7 +48,6 @@ const MapboxMap = observer(() => {
 
   function addSelectedStates() {
     for (const state of stateStore.states) {
-      console.log(state)
       map?.setFeatureState({
         source: 'composite',
         sourceLayer: 'albersusa',
