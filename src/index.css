@@ -71,10 +71,6 @@ button:focus-visible {
   padding: 1.25em;
 }
 
-.state-abbr:hover {
-  text-decoration: underline;
-}
-
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;

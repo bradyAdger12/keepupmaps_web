@@ -5,7 +5,7 @@ export class State {
   states: State[] = localStorage.getItem('states') ? JSON.parse(localStorage.getItem('states')!).map((item: unknown) => item as State) : []
   name: string | null = null;
   id: string | number | undefined = undefined;
-  userId: string | null = null
+  territoryId: string | null = null
   note: string | null | undefined = null
   constructor() {
     makeAutoObservable(this)
@@ -35,6 +35,6 @@ export class State {
 
   addState({ state }: { state:  State }) {
     this.states.push(state);
-    localStorage.setItem('states', JSON.stringify(this.states.map((item) => { return { name: item.name, id: item.id, userId: item.userId }})))
+    localStorage.setItem('states', JSON.stringify(this.states.map((item) => { return { name: item.name, id: item.id, territoryId: item.territoryId } as State})))
   }
 }

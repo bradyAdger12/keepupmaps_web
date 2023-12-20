@@ -120,6 +120,11 @@ const router = createBrowserRouter([
 ]);
 
 const queryClient = new QueryClient()
+if (import.meta.env.VITE_SCHEMA_VERSION && localStorage.getItem('version') != import.meta.env.VITE_SCHEMA_VERSION) {
+  localStorage.clear()
+  localStorage.setItem('version', import.meta.env.VITE_SCHEMA_VERSION)
+}
+
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
