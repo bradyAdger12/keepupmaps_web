@@ -1,15 +1,10 @@
-import { Outlet, useLocation } from "react-router-dom"
-import { AuthContext } from '../stores/stores'
-import { useContext } from 'react'
+import { Outlet } from "react-router-dom"
 import { observer } from "mobx-react-lite"
 
 import { Toolbar } from 'primereact/toolbar'
 import { Link } from 'react-router-dom'
-import { Button } from 'primereact/button'
 
 const RootLayout = observer(() => {
-  const auth = useContext(AuthContext)
-  const location = useLocation()
 
   const toolbarStart = (
     <>

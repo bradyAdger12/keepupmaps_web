@@ -9,6 +9,7 @@ import _ from 'lodash'
 import { colors, stateAbbreviation } from "../../lib/Constants";
 import { State } from "../../stores/states";
 import { Dialog } from "primereact/dialog";
+import { InputTextarea } from "primereact/inputtextarea";
 const UserAdmin = observer(({ onUserSelected }: { onUserSelected: (arg0: User | null) => void }) => {
   const userStore = useContext(UserContext)
   const stateStore = useContext(StateContext)
@@ -16,6 +17,8 @@ const UserAdmin = observer(({ onUserSelected }: { onUserSelected: (arg0: User | 
   const [colorInput, setColorInput] = useState<string | null>()
   const [users, setUsers] = useState(userStore.users)
   const [selectedUser, setSelectedUser] = useState<User | null>(users?.length > 0 ? users[0] : null)
+  const [selectedState, setSelectedState] = useState<State | null>()
+  const [note, setNote] = useState('')
   const [noteDialogOpen, setNoteDialogOpen] = useState(false)
   function addUser() {
     if (_.find(userStore.users, (user: User) => user.name.toLowerCase() === userInputText.toLowerCase() || user.color === colorInput)) {
@@ -34,6 +37,8 @@ const UserAdmin = observer(({ onUserSelected }: { onUserSelected: (arg0: User | 
 
   function onStateClick(state: State) {
     setNoteDialogOpen(true)
+    setSelectedState(state)
+    setNote(state.note || '')
   }
   useEffect(() => {
     onUserSelected(selectedUser)
@@ -63,7 +68,7 @@ const UserAdmin = observer(({ onUserSelected }: { onUserSelected: (arg0: User | 
         <div className="flex">
           <div className="p-inputgroup flex-1">
             <InputText placeholder="Enter user here" className="border-solid border-2 pl-2" value={userInputText} onChange={e => setUserInputText(e.target.value)} onKeyUp={e => e.key === 'Enter' && addUser()} />
-            <Button className="rounded-l-none bg-blue-300 text-white" label="Add New User" onClick={addUser} />
+            <Button className="rounded-l-none bg-blue-500 text-white" label="Add New User" onClick={addUser} />
           </div>
         </div>
         {userInputText && <div className="mt-6">
@@ -79,13 +84,17 @@ const UserAdmin = observer(({ onUserSelected }: { onUserSelected: (arg0: User | 
           {users && users.length > 0 && users.map((item) => UserItem(item))}
         </div>
       </div>
-      <Dialog header="Header" visible={noteDialogOpen} style={{ width: '50vw' }} onHide={() => setNoteDialogOpen(false)}>
-        <p className="m-0">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-          Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-          consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-          Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-        </p>
+      <Dialog header={selectedState?.name} className="m-10" visible={noteDialogOpen} style={{ width: '50vw' }} onHide={() => setNoteDialogOpen(false)}>
+        <div>
+          {selectedState &&
+            <>
+              <div><InputTextarea className="bg-gray-100 w-6/12 mt-5 p-2" placeholder="Enter a note on this state" value={note} onChange={(e) => setNote(e.target.value)} rows={5} /></div>
+              <Button className="bg-blue-500 text-white mt-4" onClick={() => { selectedState.note = note; stateStore.saveStates() }}>
+                Save
+              </Button>
+            </>
+          }
+        </div>
       </Dialog>
     </>)
 })

@@ -6,14 +6,15 @@ export class State {
   name: string | null = null;
   id: string | number | undefined = undefined;
   userId: string | null = null
-  note: string | null = null
+  note: string | null | undefined = null
   constructor() {
     makeAutoObservable(this)
   }
   clearStates ({ map }: { map?: Map | null }) {
     for (const state of this.states) {
       map?.setFeatureState({
-        source: 'states',
+        source: 'composite',
+        sourceLayer: 'albersusa',
         id: state.id,
       }, {
         clicked: false
@@ -21,6 +22,10 @@ export class State {
     }
     localStorage.removeItem('states')
     this.states = []
+  }
+
+  saveStates () {
+    localStorage.setItem('states', JSON.stringify(this.states))
   }
 
   removeState({ id }: { id: string | number | undefined }) {
