@@ -77,9 +77,6 @@ const MapboxMap = observer(() => {
     }
   }, [feature])
   useEffect(() => {
-    console.log('nice')
-  }, [stateStore.states])
-  useEffect(() => {
     mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN
     setMap(new mapboxgl.Map({
       container: mapContainer.current!,
@@ -147,7 +144,7 @@ const MapboxMap = observer(() => {
       <div id="divToPrint" className="flex justify-around mt-8">
         <div ref={mapContainer}  className="w-7/12" style={{ height: 700 }} />
         <div className="w-4/12">
-          <TerritoryAdmin onTerritorySelected={(e: Territory) => { setActiveTerritory(e) }} downloadInProgress={downloadInProgress} />
+          <TerritoryAdmin onTerritorySelected={(e: Territory) => { setActiveTerritory(e) }} downloadInProgress={downloadInProgress} map={map} />
         </div>
       </div>
     </>

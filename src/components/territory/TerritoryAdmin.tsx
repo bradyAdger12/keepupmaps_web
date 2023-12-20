@@ -9,11 +9,12 @@ import _ from 'lodash'
 import { colors, stateAbbreviation } from "../../lib/Constants";
 import { Dialog } from "primereact/dialog";
 import { InputTextarea } from "primereact/inputtextarea";
-const TerritoryAdmin = observer(({ onTerritorySelected, downloadInProgress }: { onTerritorySelected: (arg0: Territory) => void, downloadInProgress: boolean }) => {
+const TerritoryAdmin = observer(({ onTerritorySelected, downloadInProgress, map }: { onTerritorySelected: (arg0: Territory) => void, downloadInProgress: boolean, map?: mapboxgl.Map }) => {
   const territoryStore = useContext(TerritoryContext)
   const stateStore = useContext(StateContext)
   const [territoryInputText, setTerritoryInputText] = useState('')
   const [colorInput, setColorInput] = useState<string | null>()
+  const [editColor, setEditColor] = useState<string | null>()
   const [territories, setTerritories] = useState(territoryStore.territories)
   const [selectedTerritory, setSelectedTerritory] = useState<Territory | null>(territories?.length > 0 ? territories[0] : null)
   const [territoryToEdit, setTerritoryToEdit] = useState<Territory | null>()
@@ -36,11 +37,60 @@ const TerritoryAdmin = observer(({ onTerritorySelected, downloadInProgress }: { 
     }
   }
 
+  function deleteTerritory() {
+    const removedStates = _.remove(stateStore.states, (state) => state.territoryId === territoryToEdit?.id)
+    _.remove(territoryStore.territories, (territory) => territory.id === territoryToEdit?.id)
+    for (const state of removedStates) {
+      map?.setFeatureState({
+        source: 'composite',
+        sourceLayer: 'albersusa',
+        id: state.id,
+      }, {
+        clicked: false
+      });
+    }
+    territoryStore.saveTerritories()
+    stateStore.saveStates()
+    setNoteDialogOpen(false)
+  }
+
+  function onTerritorySave() {
+    if (territoryToEdit) {
+      territoryToEdit.note = note;
+      territoryToEdit.name = name;
+      if (editColor) {
+        if (territoryToEdit.color != editColor) {
+          updateRegionColorsInMap(editColor)
+        }
+        territoryToEdit.color = editColor
+      }
+      territoryStore.saveTerritories();
+      setNote('')
+      setName('')
+      setEditColor('')
+      setNoteDialogOpen(false)
+    }
+  }
+
+  function updateRegionColorsInMap(color: string) {
+    const statesToUpdate = stateStore.states.filter((state) => state.territoryId === territoryToEdit?.id)
+    for (const state of statesToUpdate) {
+      map?.setFeatureState({
+        source: 'composite',
+        sourceLayer: 'albersusa',
+        id: state.id?.toString()
+      }, {
+        stateColor: color || '#ff0000'
+      });
+    }
+  }
+
   function onTerritoryClick(territory: Territory) {
     setNoteDialogOpen(true)
     setTerritoryToEdit(territory)
     setNote(territory.note || '')
     setName(territory.name || '')
+    setEditColor(territory.color || '')
   }
   useEffect(() => {
     onTerritorySelected(selectedTerritory!)
@@ -95,10 +145,15 @@ const TerritoryAdmin = observer(({ onTerritorySelected, downloadInProgress }: { 
         <div>
           {territoryToEdit &&
             <>
+              <Dropdown value={editColor} onChange={(e) => setEditColor(e.target.value)} options={Object.keys(colors)} valueTemplate={(e) => <div className="flex justify-between"><div>{e}</div><div className="rounded-sm" style={{ backgroundColor: colors[e as keyof typeof colors], width: 20, height: 20 }}></div></div>} itemTemplate={(e) => <div className="flex justify-between"><div>{e}</div><div className="rounded-sm" style={{ backgroundColor: colors[e as keyof typeof colors], width: 20, height: 20 }}></div></div>}
+                placeholder="Please select a color" className="w-full md:w-14rem border-2 mt-2" />
               <div><InputText className="bg-gray-100 w-6/12 mt-5 p-2" placeholder="Edit name for this territory" value={name} onChange={(e) => setName(e.target.value)} /></div>
               <div><InputTextarea className="bg-gray-100 w-6/12 mt-5 p-2" placeholder="Enter a note for this territory" value={note} onChange={(e) => setNote(e.target.value)} rows={5} /></div>
-              <Button className="bg-blue-500 text-white mt-4" onClick={() => { territoryToEdit.note = note; territoryToEdit.name = name; territoryStore.saveTerritories(); setNoteDialogOpen(false) }}>
+              <Button className="bg-blue-500 text-white mt-4" onClick={() => { onTerritorySave() }}>
                 Save
+              </Button>
+              <Button className="bg-red-500 text-white mt-4 ml-2" onClick={() => { deleteTerritory() }}>
+                Delete Territory
               </Button>
             </>
           }
