@@ -110,7 +110,7 @@ const TerritoryAdmin = observer(({ onTerritorySelected, downloadInProgress, map 
             <div className="flex flex-wrap">({stateStore.states.filter((state) => state.territoryId === territory.id).map((item, index) => <div key={item.id} className="flex-initial"><span className="state-abbr" onClick={(e) => { e.stopPropagation() }}>{stateAbbreviation[item.name! as keyof typeof stateAbbreviation]}</span><span>{index !== stateStore.states.filter((state) => state.territoryId === territory.id).length - 1 && ', '}</span></div>)})</div>
           </div>
           <div className="flex-initial rounded-md" style={{ backgroundColor: territory.color, width: 30, height: 30 }} />
-          <div className="flex-initial ml-2" onClick={(e) => { e.stopPropagation(); onTerritoryClick(territory) }}><Button icon="pi pi-pencil" className="bg-transparent" outlined rounded text size="small" /></div>
+          {!downloadInProgress && <div className="flex-initial ml-2" onClick={(e) => { e.stopPropagation(); onTerritoryClick(territory) }}><Button icon="pi pi-pencil" className="bg-transparent" outlined rounded text size="small" /></div>}
         </div>
         {territory.note && <div className="text-gray-500">{territory.note}</div>}
       </div>
