@@ -60,9 +60,8 @@ const MapboxMap = observer(() => {
   }
 
   useEffect(() => {
-    //1703100582509
     if (feature?.id && activeTerritory) {
-      if (!feature?.state.clicked) {
+      if (!feature?.state.clicked && !_.find(stateStore.states, (state) => state.id === feature.id)) {
         stateStore.addState({ state: { name: feature.properties?.state_name, id: feature.id, territoryId: activeTerritory.id } as State })
       } else {
         stateStore.removeState({ id: feature.id })
@@ -77,7 +76,9 @@ const MapboxMap = observer(() => {
       });
     }
   }, [feature])
-
+  useEffect(() => {
+    console.log('nice')
+  }, [stateStore.states])
   useEffect(() => {
     mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN
     setMap(new mapboxgl.Map({
