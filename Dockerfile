@@ -2,13 +2,13 @@
 FROM node:latest
 
 # Create and set the working directory
-WORKDIR /app
+WORKDIR /usr/src/app
 
 # Copy package.json and package-lock.json to the working directory
 COPY package.json yarn.lock ./
 
 # Install dependencies
-RUN yarn global add serve
+RUN yarn add serve
 RUN yarn install
 
 # Copy the entire app directory to the working directory

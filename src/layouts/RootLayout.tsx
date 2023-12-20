@@ -13,13 +13,13 @@ const RootLayout = observer(() => {
 
   const toolbarStart = (
     <>
-      <Link to={`/`}>App Name</Link>
+      <Link to={`/`}>Mapbox - US</Link>
     </>
   )
   const toolbarEnd = (
     <>
-    <Link to={`/contact`} style={{marginRight: 25}}>Contact</Link>
-    {
+    {/* <Link to={`/contact`} style={{marginRight: 25}}>Contact</Link> */}
+    {/* {
       auth.isAuthenticated ?
         <>
           <Button style={{backgroundColor: 'var(--primary-color)'}} label="Logout" onClick={() => auth.logout()} />
@@ -27,7 +27,7 @@ const RootLayout = observer(() => {
         </>
         :
         location.pathname !== '/auth/login' ? <Link to={`auth/login`}>Login</Link> : <div></div>
-    }
+    } */}
     </>
   )
 

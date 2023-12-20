@@ -1,7 +1,12 @@
 version: '3.7'
 services:
   clientmap_connect:
+    build:
+      context: .
+      dockerfile: Dockerfile
     image: my-react-app
     restart: always
+    volumes:
+      - .:/usr/src/app
     ports:
       - '3002:3000'

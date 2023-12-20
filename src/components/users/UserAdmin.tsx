@@ -8,6 +8,7 @@ import { Dropdown } from "primereact/dropdown";
 import _ from 'lodash'
 import { colors, stateAbbreviation } from "../../lib/Constants";
 import { State } from "../../stores/states";
+import { Dialog } from "primereact/dialog";
 const UserAdmin = observer(({ onUserSelected }: { onUserSelected: (arg0: User | null) => void }) => {
   const userStore = useContext(UserContext)
   const stateStore = useContext(StateContext)
@@ -15,6 +16,7 @@ const UserAdmin = observer(({ onUserSelected }: { onUserSelected: (arg0: User | 
   const [colorInput, setColorInput] = useState<string | null>()
   const [users, setUsers] = useState(userStore.users)
   const [selectedUser, setSelectedUser] = useState<User | null>(users?.length > 0 ? users[0] : null)
+  const [noteDialogOpen, setNoteDialogOpen] = useState(false)
   function addUser() {
     if (_.find(userStore.users, (user: User) => user.name.toLowerCase() === userInputText.toLowerCase() || user.color === colorInput)) {
       return
@@ -30,8 +32,8 @@ const UserAdmin = observer(({ onUserSelected }: { onUserSelected: (arg0: User | 
     }
   }
 
-  function onStateClick (state: State) {
-    console.log(state)
+  function onStateClick(state: State) {
+    setNoteDialogOpen(true)
   }
   useEffect(() => {
     onUserSelected(selectedUser)
@@ -39,7 +41,7 @@ const UserAdmin = observer(({ onUserSelected }: { onUserSelected: (arg0: User | 
   useEffect(() => {
     setUsers(userStore.users)
   }, [userStore.users])
-  const template = (user: User) => {
+  const UserItem = (user: User) => {
     if (!user) {
       return <div></div>
     }
@@ -74,10 +76,17 @@ const UserAdmin = observer(({ onUserSelected }: { onUserSelected: (arg0: User | 
         </div>
         }
         <div className="mt-10">
-          {users && users.length > 0 && users.map((item) => template(item))}
+          {users && users.length > 0 && users.map((item) => UserItem(item))}
         </div>
       </div>
-
+      <Dialog header="Header" visible={noteDialogOpen} style={{ width: '50vw' }} onHide={() => setNoteDialogOpen(false)}>
+        <p className="m-0">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+          consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+          Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        </p>
+      </Dialog>
     </>)
 })
 

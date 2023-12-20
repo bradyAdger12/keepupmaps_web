@@ -6,6 +6,7 @@ export class State {
   name: string | null = null;
   id: string | number | undefined = undefined;
   userId: string | null = null
+  note: string | null = null
   constructor() {
     makeAutoObservable(this)
   }
