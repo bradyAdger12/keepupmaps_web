@@ -112,7 +112,7 @@ const TerritoryAdmin = observer(({ onTerritorySelected, downloadInProgress, map 
           <div className="flex-initial rounded-md" style={{ backgroundColor: territory.color, width: 30, height: 30 }} />
           {!downloadInProgress && <div className="flex-initial ml-2" onClick={(e) => { e.stopPropagation(); onTerritoryClick(territory) }}><Button icon="pi pi-pencil" className="bg-transparent" outlined rounded text size="small" /></div>}
         </div>
-        {territory.note && <div className="text-gray-500">{territory.note}</div>}
+        {territory.note && <div className="text-gray-500" dangerouslySetInnerHTML={{ __html: territory.note.replace(/\n/g, '<br>') }} />}
       </div>
     )
   }
@@ -148,7 +148,7 @@ const TerritoryAdmin = observer(({ onTerritorySelected, downloadInProgress, map 
               <Dropdown value={editColor} onChange={(e) => setEditColor(e.target.value)} options={Object.keys(colors)} valueTemplate={(e) => <div className="flex justify-between"><div>{e}</div><div className="rounded-sm" style={{ backgroundColor: colors[e as keyof typeof colors], width: 20, height: 20 }}></div></div>} itemTemplate={(e) => <div className="flex justify-between"><div>{e}</div><div className="rounded-sm" style={{ backgroundColor: colors[e as keyof typeof colors], width: 20, height: 20 }}></div></div>}
                 placeholder="Please select a color" className="w-full md:w-14rem border-2 mt-2" />
               <div><InputText className="bg-gray-100 w-6/12 mt-5 p-2" placeholder="Edit name for this territory" value={name} onChange={(e) => setName(e.target.value)} /></div>
-              <div><InputTextarea className="bg-gray-100 w-6/12 mt-5 p-2" placeholder="Enter a note for this territory" value={note} onChange={(e) => setNote(e.target.value)} rows={5} /></div>
+              <div><InputTextarea className="bg-gray-100 w-6/12 mt-5 p-2"  placeholder="Enter a note for this territory" value={note} onChange={(e) => setNote(e.target.value)} rows={5} /></div>
               <Button className="bg-blue-500 text-white mt-4" onClick={() => { onTerritorySave() }}>
                 Save
               </Button>
