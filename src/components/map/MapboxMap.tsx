@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite";
-import mapboxgl, { IControl, MapboxGeoJSONFeature } from "mapbox-gl";
+import mapboxgl, { IControl, MapboxGeoJSONFeature, Projection } from "mapbox-gl";
 import { useContext, useEffect, useState } from "react";
 import UserAdmin from "../users/UserAdmin";
 import { User } from "../../stores/users";
@@ -7,6 +7,7 @@ import { colors } from "../../lib/Constants";
 import { StateContext, UserContext } from "../../stores/stores";
 import { State } from "../../stores/states";
 import { Button } from "primereact/button";
+import _ from 'lodash'
 const MapboxMap = observer(() => {
   const stateStore = useContext(StateContext)
   const userStore = useContext(UserContext)
@@ -85,13 +86,30 @@ const MapboxMap = observer(() => {
   function mapOnLoad() {
     map?.on('load', () => {
       handleMapHovering()
+      addSelectedStates()
       map?.on('click', 'state-fills', (e) => handleMapClick(e))
     })
   }
 
+  function addSelectedStates() {
+    for (const state of stateStore.states) {
+      map?.setFeatureState({
+        source: 'states',
+        id: state.id,
+      }, {
+        clicked: true,
+        stateColor: _.find(userStore.users, (user: User) => user.name === state.userId)?.color
+      });
+    }
+  }
+
   useEffect(() => {
     if (feature?.id && activeUser) {
-      stateStore.addState({ state: { name: feature.properties?.STATE_NAME, id: feature.id, userId: activeUser.name } as State })
+      if (!feature?.state.clicked) {
+        stateStore.addState({ state: { name: feature.properties?.STATE_NAME, id: feature.id, userId: activeUser.name } as State })
+      } else {
+        stateStore.removeState({ id: feature.id })
+      }
       map?.setFeatureState({
         source: 'states',
         id: feature?.id,
@@ -106,7 +124,7 @@ const MapboxMap = observer(() => {
     mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN
     setMap(new mapboxgl.Map({
       container: 'map-container',
-      projection: 'mercator',
+      projection: 'mercator' as unknown as Projection,
       style: 'mapbox://styles/mapbox/streets-v12',
       center: [-105.1066, 40.5733],
       zoom: 3

@@ -1,5 +1,6 @@
 import { makeAutoObservable } from 'mobx' 
 import { Map } from 'mapbox-gl';
+import _ from 'lodash'
 export class State {
   states: State[] = localStorage.getItem('states') ? JSON.parse(localStorage.getItem('states')!).map((item: unknown) => item as State) : []
   name: string | null = null;
@@ -19,6 +20,11 @@ export class State {
     }
     localStorage.removeItem('states')
     this.states = []
+  }
+
+  removeState({ id }: { id: string | number | undefined }) {
+    _.remove(this.states, (item) => item.id === id)
+    localStorage.setItem('states', JSON.stringify(this.states))
   }
 
   addState({ state }: { state:  State }) {

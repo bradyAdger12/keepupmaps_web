@@ -6,7 +6,8 @@ import { StateContext, UserContext } from "../../stores/stores";
 import { User } from "../../stores/users";
 import { Dropdown } from "primereact/dropdown";
 import _ from 'lodash'
-import { colors } from "../../lib/Constants";
+import { colors, stateAbbreviation } from "../../lib/Constants";
+import { State } from "../../stores/states";
 const UserAdmin = observer(({ onUserSelected }: { onUserSelected: (arg0: User | null) => void }) => {
   const userStore = useContext(UserContext)
   const stateStore = useContext(StateContext)
@@ -28,6 +29,10 @@ const UserAdmin = observer(({ onUserSelected }: { onUserSelected: (arg0: User | 
       setColorInput('')
     }
   }
+
+  function onStateClick (state: State) {
+    console.log(state)
+  }
   useEffect(() => {
     onUserSelected(selectedUser)
   }, [selectedUser])
@@ -39,13 +44,13 @@ const UserAdmin = observer(({ onUserSelected }: { onUserSelected: (arg0: User | 
       return <div></div>
     }
     return (
-      <div onClick={() => setSelectedUser(user)} className={`cursor-pointer items-center p-3  ${selectedUser?.name === user.name && 'bg-gray-100 rounded-md'}`}>
-        <div className="flex justify-between items-center">
-          <div className="font-bold" style={{ fontSize: 30 }}>{user.name}</div>
-          <div className="rounded-md" style={{ backgroundColor: user.color, width: 30, height: 30 }} />
-        </div>
-        <div className="flex flex-wrap">
-          {stateStore.states.map((item, index) => <div>{item.name}{index !== stateStore.states.length - 1 && ', '}</div>)}
+      <div onClick={() => setSelectedUser(user)} className={`cursor-pointer items-center p-3  ${selectedUser?.name === user.name && 'bg-gray-100 rounded-md border-solid border-blue-200 border-2'}`}>
+        <div className="flex flex-wrap items-center">
+          <div className="font-bold flex-initial mr-2" style={{ fontSize: 30 }}>{user.name}</div>
+          <div className="flex-1">
+            ({stateStore.states.filter((state) => state.userId === user.name).map((item, index) => <><span className="state-abbr" onClick={(e) => { e.stopPropagation(); onStateClick(item) }}>{stateAbbreviation[item.name! as keyof typeof stateAbbreviation]}</span><span>{index !== stateStore.states.filter((state) => state.userId === user.name).length - 1 && ', '}</span></>)})
+          </div>
+          <div className="flex-initial rounded-md" style={{ backgroundColor: user.color, width: 30, height: 30 }} />
         </div>
       </div>
     )
@@ -64,7 +69,7 @@ const UserAdmin = observer(({ onUserSelected }: { onUserSelected: (arg0: User | 
             Please select a color
           </label>
 
-          <Dropdown value={colorInput} onChange={(e) => setColorInput(e.target.value)} options={Object.keys(colors).filter((item) => !_.find(users, (user) => user.color === item))} valueTemplate={(e) => <div className="flex justify-between"><div>{e}</div><div className="rounded-sm" style={{ backgroundColor: colors[e], width: 20, height: 20 }}></div></div>} itemTemplate={(e) => <div className="flex justify-between"><div>{e}</div><div className="rounded-sm" style={{ backgroundColor: colors[e], width: 20, height: 20 }}></div></div>}
+          <Dropdown value={colorInput} onChange={(e) => setColorInput(e.target.value)} options={Object.keys(colors).filter((item) => !_.find(users, (user) => user.color === item))} valueTemplate={(e) => <div className="flex justify-between"><div>{e}</div><div className="rounded-sm" style={{ backgroundColor: colors[e as keyof typeof colors], width: 20, height: 20 }}></div></div>} itemTemplate={(e) => <div className="flex justify-between"><div>{e}</div><div className="rounded-sm" style={{ backgroundColor: colors[e as keyof typeof colors], width: 20, height: 20 }}></div></div>}
             placeholder="Please select a color" className="w-full md:w-14rem border-2 mt-2" />
         </div>
         }
