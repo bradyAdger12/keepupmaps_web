@@ -7,7 +7,6 @@ import { Territory } from "../../stores/territories";
 import { Dropdown } from "primereact/dropdown";
 import _ from 'lodash'
 import { colors, stateAbbreviation } from "../../lib/Constants";
-import { State } from "../../stores/states";
 import { Dialog } from "primereact/dialog";
 import { InputTextarea } from "primereact/inputtextarea";
 const TerritoryAdmin = observer(({ onTerritorySelected, downloadInProgress }: { onTerritorySelected: (arg0: Territory) => void, downloadInProgress: boolean }) => {
