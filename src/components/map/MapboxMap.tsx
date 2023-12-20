@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite";
-import mapboxgl, { IControl, MapboxGeoJSONFeature, Projection } from "mapbox-gl";
+import mapboxgl, { MapboxGeoJSONFeature, Projection } from "mapbox-gl";
 import { useContext, useEffect, useState } from "react";
 import UserAdmin from "../users/UserAdmin";
 import { User } from "../../stores/users";
@@ -12,57 +12,12 @@ const MapboxMap = observer(() => {
   const stateStore = useContext(StateContext)
   const userStore = useContext(UserContext)
   const [map, setMap] = useState<mapboxgl.Map | null>(null)
-  const [geolocateControl, setGeolocateControl] = useState<IControl>()
   const [activeUser, setActiveUser] = useState<User | null>()
   const [feature, setFeature] = useState<MapboxGeoJSONFeature | null>()
-  let hoveredPolygonId: number | string | undefined = undefined
 
-  function handleMapHovering() {
-    // map?.addSource('states', {
-    //   'type': 'vector',
-    //   'url': 'mapbox://mbxsolutions.albersusa,mbxsolutions.albersusa-points'
-    // });
-
+  function initPaintPropertyListeners() {
     map?.setPaintProperty('states', 'fill-color', ['match', ['feature-state', 'stateColor'], ...Object.entries(colors).flat().filter((item) => item != 'default')])
     map?.setPaintProperty('states', 'fill-opacity', ['case', ['boolean', ['feature-state', 'clicked'], false], 0.5, 0.0])
-
-    // map?.addLayer({
-    //   'id': 'state_fill',
-    //   'type': 'fill',
-    //   'source': 'composite',
-    //   'source-layer': 'states',
-    //   'layout': {},
-    //   'paint': {
-    //     'fill-color': ['match', ['feature-state', 'stateColor'], ...Object.entries(colors).flat().filter((item) => item != 'default')],
-    //     'fill-opacity': ['case', ['boolean', ['feature-state', 'clicked'], false], 0.5, 0.0]
-    //   }
-    // });
-
-    //   map?.on('mousemove', 'states', (e) => {
-    //     if (e?.features && e.features.length > 0) {
-    //       if (hoveredPolygonId !== undefined) {
-    //         map.setFeatureState(
-    //           { source: 'c', sourceLayer: 'albersusa', id: hoveredPolygonId },
-    //           { hover: false }
-    //         );
-    //       }
-    //       hoveredPolygonId = e.features[0].id;
-    //       map.setFeatureState(
-    //         { source: 'states', sourceLayer: 'albersusa', id: hoveredPolygonId },
-    //         { hover: true }
-    //       );
-    //     }
-    //   });
-
-    //   map?.on('mouseleave', 'state-fills', () => {
-    //     if (hoveredPolygonId !== undefined) {
-    //       map?.setFeatureState(
-    //         { source: 'states', id: hoveredPolygonId },
-    //         { hover: false }
-    //       );
-    //       hoveredPolygonId = undefined
-    //     }
-    //   });
   }
 
 
@@ -82,9 +37,8 @@ const MapboxMap = observer(() => {
 
   function mapOnLoad() {
     map?.on('load', () => {
-      handleMapHovering()
+      initPaintPropertyListeners()
       addSelectedStates()
-      map?.on("moveend", (e) => console.log(map?.getZoom(), map?.getBounds(), map?.getCenter()))
       map?.on('click', 'states', (e) => handleMapClick(e))
     })
   }
