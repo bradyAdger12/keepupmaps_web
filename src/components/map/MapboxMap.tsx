@@ -121,7 +121,7 @@ const MapboxMap = observer(() => {
         const widthScale = pdfWidth / imgWidth;
         const heightScale = pdfHeight / imgHeight;
 
-        const scale = Math.min(widthScale, heightScale);
+        const scale = Math.min(widthScale, heightScale) * 0.9;
 
         // Calculate new image dimensions to fit within the PDF
         const newImgWidth = imgWidth * scale;
@@ -141,8 +141,8 @@ const MapboxMap = observer(() => {
     <>
       <Button onClick={() => clearData()} label="Clear Data" className="bg-blue-500 text-white" />
       <Button onClick={() => printDocument()} label="Save to PDF" className="bg-blue-500 text-white" />
-      <div id="divToPrint" className="flex justify-around mt-8">
-        <div ref={mapContainer}  className="w-7/12" style={{ height: 700 }} />
+      <div id="divToPrint" className="flex flex-wrap gap-y-5 justify-around mt-8">
+        <div ref={mapContainer} className="w-7/12" style={{ height: 700 }} />
         <div className="w-4/12">
           <TerritoryAdmin onTerritorySelected={(e: Territory) => { setActiveTerritory(e) }} downloadInProgress={downloadInProgress} map={map} />
         </div>
