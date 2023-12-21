@@ -86,7 +86,7 @@ const MapboxMap = observer(() => {
       style: 'mapbox://styles/brady12/clq5cvwka01bp01p7e2y07cxp',
       center: [
         -2.612890767204192, 0.6426634701893619],
-      zoom: 3.314
+      zoom: 4
     }))
   }, [])
   useEffect(() => {
@@ -103,38 +103,38 @@ const MapboxMap = observer(() => {
     const element = document.getElementById('divToPrint')
     setDownloadInProgress(true)
     setTimeout(() => {
-    html2canvas(element!)
-      .then((canvas) => {
-        const imgData = canvas.toDataURL('image/jpeg');
+      html2canvas(element!)
+        .then((canvas) => {
+          const imgData = canvas.toDataURL('image/jpeg');
 
-        // Create a PDF
-        const pdf = new jsPDF({
-          orientation: 'landscape'
-        });
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = pdf.internal.pageSize.getHeight();
+          // Create a PDF
+          const pdf = new jsPDF({
+            orientation: 'landscape'
+          });
+          const pdfWidth = pdf.internal.pageSize.getWidth();
+          const pdfHeight = pdf.internal.pageSize.getHeight();
 
-        const imgWidth = canvas.width;
-        const imgHeight = canvas.height;
+          const imgWidth = canvas.width;
+          const imgHeight = canvas.height;
 
-        // Calculate scaling factors for width and height
-        const widthScale = pdfWidth / imgWidth;
-        const heightScale = pdfHeight / imgHeight;
+          // Calculate scaling factors for width and height
+          const widthScale = pdfWidth / imgWidth;
+          const heightScale = pdfHeight / imgHeight;
 
-        const scale = Math.min(widthScale, heightScale) * 0.9;
+          const scale = Math.min(widthScale, heightScale) * 0.9;
 
-        // Calculate new image dimensions to fit within the PDF
-        const newImgWidth = imgWidth * scale;
-        const newImgHeight = imgHeight * scale;
+          // Calculate new image dimensions to fit within the PDF
+          const newImgWidth = imgWidth * scale;
+          const newImgHeight = imgHeight * scale;
 
-        const x = (pdfWidth - newImgWidth) / 2;
-        const y = (pdfHeight - newImgHeight) / 2;
-        pdf.addImage(imgData, 'JPEG', x, y, newImgWidth, newImgHeight);
-        pdf.save('screenshot.pdf');
-      })
-      .catch((error) => {
-        console.error('Error capturing screenshot:', error);
-      }).then(() => setDownloadInProgress(false));
+          const x = (pdfWidth - newImgWidth) / 1.1;
+          const y = (pdfHeight - newImgHeight) / 2;
+          pdf.addImage(imgData, 'JPEG', x, y, newImgWidth, newImgHeight);
+          pdf.save('screenshot.pdf');
+        })
+        .catch((error) => {
+          console.error('Error capturing screenshot:', error);
+        }).then(() => setDownloadInProgress(false));
     }, 1000)
   }
   return (
