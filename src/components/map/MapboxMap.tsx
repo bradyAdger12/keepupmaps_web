@@ -84,6 +84,7 @@ const MapboxMap = observer(() => {
       projection: 'mercator' as unknown as Projection,
       preserveDrawingBuffer: true,
       style: 'mapbox://styles/brady12/clq5cvwka01bp01p7e2y07cxp',
+      doubleClickZoom: false,
       center: [
         -2.612890767204192, 0.6426634701893619],
       zoom: 4
