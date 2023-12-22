@@ -28,6 +28,7 @@ const MapboxMap = observer(() => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function handleMapClick(e: any) {
     const features = map?.queryRenderedFeatures(e.point);
+
     const feature = _.find(features, (item) => item.sourceLayer == 'albersusa')
     // eslint-disable-next-line react-hooks/rules-of-hooks
     if (feature) {
@@ -94,9 +95,11 @@ const MapboxMap = observer(() => {
   }, [map])
 
   function clearData() {
-    territoryStore.clearTerritories()
-    stateStore.clearStates({ map })
-    setActiveTerritory(null)
+    if (confirm('Are you sure you want to clear all data?')) {
+      territoryStore.clearTerritories()
+      stateStore.clearStates({ map })
+      setActiveTerritory(null)
+    }
 
   }
   async function printDocument() {
@@ -139,12 +142,21 @@ const MapboxMap = observer(() => {
   }
   return (
     <>
-      <Button onClick={() => clearData()} label="Clear Data" className="bg-blue-500 text-white" />
-      <Button onClick={() => printDocument()} label="Save to PDF" className="bg-blue-500 text-white" />
-      <div id="divToPrint" className="flex flex-wrap gap-y-5 justify-around mt-8">
-        <div ref={mapContainer} className="w-7/12" style={{ height: 700 }} />
-        <div className="w-4/12">
+      <div className="flex items-baseline">
+        <h3 className="text-3xl text-slate-600">Maps</h3>
+        <span className="mx-3 text-3xl text-slate-400">|</span>
+        <h1 className="text-3xl text-slate-900 font-semibold">United States</h1>
+      </div>
+      <div id="divToPrint" className="mt-6 grid lg:grid-cols-6 gap-4">
+        <div ref={mapContainer} className="lg:col-span-4 overflow-hidden rounded-md border" style={{ height: 700 }} />
+        <div className="lg:col-span-2 flex flex-col">
           <TerritoryAdmin onTerritorySelected={(e: Territory) => { setActiveTerritory(e) }} downloadInProgress={downloadInProgress} map={map} />
+
+          {!downloadInProgress && 
+          <div className="mt-auto flex justify-between items-center">
+            <Button onClick={() => clearData()} label="Clear Data" className="text-red-700 bg-transparent" link text />
+            <Button onClick={() => printDocument()} label="Save to PDF" className="bg-blue-500 text-white" icon="pi pi-download" iconPos="right" />
+          </div>}
         </div>
       </div>
     </>

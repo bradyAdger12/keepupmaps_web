@@ -8,7 +8,7 @@ const RootLayout = observer(() => {
 
   const toolbarStart = (
     <>
-      <Link to={`/`}>Mapbox - US</Link>
+      <Link to={`/`} className="text-white text-xl font-semibold">Keep Up Maps</Link>
     </>
   )
   const toolbarEnd = (
@@ -28,7 +28,7 @@ const RootLayout = observer(() => {
 
   return (
     <>
-      <Toolbar className="app-toolbar" style={{width: '100%'}} start={toolbarStart} end={toolbarEnd} />
+      <Toolbar className="app-toolbar bg-slate-800" style={{width: '100%'}} start={toolbarStart} end={toolbarEnd} />
       <div id="detail">
           <Outlet />
       </div>

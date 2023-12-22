@@ -92,54 +92,96 @@ const TerritoryAdmin = observer(({ onTerritorySelected, downloadInProgress, map 
     setName(territory.name || '')
     setEditColor(territory.color || '')
   }
+  
   useEffect(() => {
     onTerritorySelected(selectedTerritory!)
   }, [selectedTerritory])
+  
   useEffect(() => {
     setTerritories(territoryStore.territories)
   }, [territoryStore.territories])
+  
+  const StateList = (territory: Territory) => {
+    const stateCount = stateStore.states.filter((state) => state.territoryId === territory.id).length
+    if (!stateCount) {
+      return <p className="text-slate-500 italic">No states selected</p>
+    }
+    return (
+      <div className="flex flex-wrap">
+        ({stateStore.states.filter((state) => state.territoryId === territory.id).map((item, index) => 
+        <div key={item.id} className="flex-initial">
+          <span className="state-abbr " onClick={(e) => { e.stopPropagation() }}>{stateAbbreviation[item.name! as keyof typeof stateAbbreviation]}</span>
+          <span>{index !== stateStore.states.filter((state) => state.territoryId === territory.id).length - 1 && ', '}</span>
+        </div>)})
+      </div>
+    )
+  }
+
   const TerritoryItem = (territory: Territory) => {
     if (!territory) {
       return <></>
     }
     return (
-      <div onClick={() => setSelectedTerritory(territory)} className={`cursor-pointer items-center p-3  ${(selectedTerritory?.name === territory.name && !downloadInProgress) && 'bg-gray-100 rounded-md border-solid border-blue-200 border-2'}`}>
-        <div className="flex flex-wrap items-center">
-          <div className="flex-initial rounded-md mr-2" style={{ backgroundColor: territory.color, width: 30, height: 30 }} />
-          <div className="font-bold flex-initial mr-2" style={{ fontSize: 20 }}>{territory.name}</div>
-          <div className="flex-1 mr-2" style={{ fontSize: 14 }}>
-            <div className="flex flex-wrap">({stateStore.states.filter((state) => state.territoryId === territory.id).map((item, index) => <div key={item.id} className="flex-initial"><span className="state-abbr" onClick={(e) => { e.stopPropagation() }}>{stateAbbreviation[item.name! as keyof typeof stateAbbreviation]}</span><span>{index !== stateStore.states.filter((state) => state.territoryId === territory.id).length - 1 && ', '}</span></div>)})</div>
+      <li className={`cursor-pointer items-center p-4  ${(selectedTerritory?.name === territory.name && !downloadInProgress) && 'bg-blue-100 border border-blue-200'}`} onClick={() => setSelectedTerritory(territory)}>
+        <div className="flex items-center gap-x-3">
+          <div className="h-6 w-6 rounded-full" style={{ backgroundColor: territory.color }}></div>
+          <div>
+            <h3 className="flex-auto truncate font-semibold text-gray-900 leading-8">{territory.name}</h3>
+            <div className="flex-1 mr-2" style={{ fontSize: 14 }}>
+              <div className="flex flex-wrap text-slate-500">
+                {StateList(territory)}
+              </div>
+            </div>
           </div>
-          {!downloadInProgress && <div className="flex-initial ml-2" onClick={(e) => { e.stopPropagation(); onTerritoryClick(territory) }}><Button icon="pi pi-pencil" className="bg-transparent" outlined rounded text size="small" /></div>}
+          <div className="ml-auto flex-none text-xs text-gray-500">
+            {!downloadInProgress && <div className="flex-initial ml-2" onClick={(e) => { e.stopPropagation(); onTerritoryClick(territory) }}><Button icon="pi pi-pencil" className="bg-transparent" outlined rounded text size="small" /></div>}
+            {/* ADD Action buttons here */}
+          </div>
         </div>
-        {territory.note && <div className="text-gray-500" dangerouslySetInnerHTML={{ __html: territory.note.replace(/\n/g, '<br>') }} />}
-      </div>
+        <p className="mt-3 truncate text-sm text-gray-500">
+          {territory.note && <div className="text-gray-500" dangerouslySetInnerHTML={{ __html: territory.note.replace(/\n/g, '<br>') }} />}
+        </p>
+      </li>
     )
   }
   return (
     <>
       <div>
         {!downloadInProgress && <div>
-          <div className="flex">
-            <div className="p-inputgroup flex-1">
-              <InputText placeholder="Enter territory name here (ex. Southeast)" className="border-solid border-2 pl-2" value={territoryInputText} onChange={e => setTerritoryInputText(e.target.value)} onKeyUp={e => e.key === 'Enter' && addTerritory()} />
-              <Button className="rounded-l-none bg-blue-500 text-white" label="Add New Territory" onClick={addTerritory} />
-            </div>
-          </div>
-          {territoryInputText && <div className="mt-6">
-            <label>
-              Please select a color
-            </label>
+            <fieldset className="text-slate-800 border rounded px-4 py-2">
+              <legend className="font-semibold text-lg">Add a new Territory</legend>
 
-            <Dropdown value={colorInput} onChange={(e) => setColorInput(e.target.value)} options={Object.keys(colors).filter((item) => !_.find(territories, (territory) => territory.color === item))} valueTemplate={(e) => <div className="flex justify-between"><div>{e}</div><div className="rounded-sm" style={{ backgroundColor: colors[e as keyof typeof colors], width: 20, height: 20 }}></div></div>} itemTemplate={(e) => <div className="flex justify-between"><div>{e}</div><div className="rounded-sm" style={{ backgroundColor: colors[e as keyof typeof colors], width: 20, height: 20 }}></div></div>}
-              placeholder="Please select a color" className="w-full md:w-14rem border-2 mt-2" />
-          </div>
-          }
-        </div>
-        }
-        <div className="mt-10">
+              <div className="relative mt-2 flex items-center space-x-3">
+                  {/* <input type="text" name="new-territory" id="new-territory" className="flex-1 block w-full bg-white text-left rounded-md border-0 py-1.5 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" placeholder="Enter territory name here (ex. Southeast)" /> */}
+                <InputText placeholder="Enter territory name here (ex. Southeast)" className="flex-1 block w-full bg-white h-12 left-left rounded-md border py-1.5 px-3 text-slate-900" value={territoryInputText} onChange={e => setTerritoryInputText(e.target.value)} onKeyUp={e => e.key === 'Enter' && addTerritory()} />
+                <div className="h-12 flex-shrink-0">
+                  <label htmlFor="color" className="sr-only">Color</label>
+                  <Dropdown value={colorInput} 
+                    placeholder="Color" 
+                    className="h-full bg-white rounded-md border py-0 px-3 text-slate-900" 
+                    onChange={(e) => setColorInput(e.target.value)} 
+                    options={Object.keys(colors).filter((item) => !_.find(territories, (territory) => territory.color === item))}
+                    valueTemplate={(e) => 
+                      <div className="py-0">
+                        <div className="sr-only">{e}</div>
+                        <span className="block rounded-full" style={{ backgroundColor: colors[e as keyof typeof colors], width: 20, height: 20 }}></span>
+                      </div>} 
+                    itemTemplate={(e) => 
+                      <div className="py-0">
+                        <div className="sr-only">{e}</div>
+                        <span className="block rounded-full" style={{ backgroundColor: colors[e as keyof typeof colors], width: 20, height: 20 }}></span>
+                      </div>} 
+                    />
+                </div>  
+              </div>
+              <div className="py-1 flex justify-end">
+                <Button className="bg-blue-500 text-white text-sm" label="Add New Territory" onClick={addTerritory} size="small" />
+              </div>
+            </fieldset>
+        </div>}
+        <ul role="list" className="mt-4 divide-y divide-gray-100 bg-white rounded overflow-hidden">
           {territories && territories.length > 0 && territories.map((item: Territory) => <div key={item.id}>{TerritoryItem(item)}</div>)}
-        </div>
+        </ul>
       </div>
       <Dialog closeIcon="pi pi-times" header={territoryToEdit?.name} className="m-10" visible={noteDialogOpen} style={{ width: '50vw' }} onHide={() => setNoteDialogOpen(false)}>
         <div>
