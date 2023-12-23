@@ -85,6 +85,7 @@ const MapboxMap = observer(() => {
       preserveDrawingBuffer: true,
       style: 'mapbox://styles/brady12/clq5cvwka01bp01p7e2y07cxp',
       doubleClickZoom: false,
+      minZoom: 3.5,
       center: [
         -2.612890767204192, 0.6426634701893619],
       zoom: 4
@@ -140,8 +141,10 @@ const MapboxMap = observer(() => {
   }
   return (
     <>
-      <Button onClick={() => clearData()} label="Clear Data" className="bg-blue-500 text-white" />
-      <Button onClick={() => printDocument()} label="Save to PDF" className="bg-blue-500 text-white" />
+      <div className="flex gap-x-4 ml-10">
+        <Button onClick={() => clearData()} label="Clear Data" className="bg-slate-500 text-white" />
+        <Button onClick={() => printDocument()} label="Save to PDF" className="bg-green-500 text-white" icon="pi pi-file-pdf" />
+      </div>
       <div id="divToPrint" className="flex flex-wrap gap-y-5 justify-around mt-8">
         <div ref={mapContainer} className="w-7/12" style={{ height: 700 }} />
         <div className="w-4/12">
