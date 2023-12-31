@@ -3,6 +3,7 @@ import { Auth } from './auth'
 import { Contact } from './contact'
 import { Territory } from './territories'
 import { State } from './states'
+import { MapboxMap } from './mapbox_map'
 
 export const authStore = new Auth()
 export const AuthContext = createContext<Auth>(authStore)
@@ -15,3 +16,6 @@ export const TerritoryContext = createContext<Territory>(territoryStore)
 
 export const stateStore = new State()
 export const StateContext = createContext<State>(stateStore)
+
+export const mapboxMapStore = new MapboxMap()
+export const MapboxMapContext = createContext<MapboxMap>(mapboxMapStore)

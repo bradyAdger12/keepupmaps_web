@@ -3,26 +3,41 @@ import mapboxgl, { MapboxGeoJSONFeature, Projection } from "mapbox-gl";
 import { useContext, useEffect, useState, useRef } from "react";
 import TerritoryAdmin from "../territory/TerritoryAdmin";
 import { Territory } from "../../stores/territories";
-import { colors } from "../../lib/Constants";
-import { StateContext, TerritoryContext } from "../../stores/stores";
+
+import { MapboxMapContext, StateContext, TerritoryContext } from "../../stores/stores";
 import { State } from "../../stores/states";
 import { Button } from "primereact/button";
 import _ from 'lodash'
 import jsPDF from 'jspdf'
 import html2canvas from 'html2canvas'
+import { SplitButton } from "primereact/splitbutton";
+import { ImageType, MapExportImage, MapExportPDF } from "../../lib/MapAssetExport";
 const MapboxMap = observer(() => {
   const stateStore = useContext(StateContext)
   const territoryStore = useContext(TerritoryContext)
-  const [map, setMap] = useState<mapboxgl.Map | null>(null)
+  const mapboxMapStore = useContext(MapboxMapContext)
   const mapContainer = useRef(null);
+  const map = mapboxMapStore.map
   const [activeTerritory, setActiveTerritory] = useState<Territory | null>()
   const [downloadInProgress, setDownloadInProgress] = useState(false)
   const [feature, setFeature] = useState<MapboxGeoJSONFeature | null>()
+  const exportItems = [
+    {
+      label: 'Export to PNG',
+      icon: 'pi pi-file-png',
+      command: () => {
+        printDocument({ fileExtension: 'png' })
+      }
+    },
+    {
+      label: 'Export to JPEG',
+      icon: 'pi pi-file-jpeg',
+      command: () => {
+        printDocument({ fileExtension: 'jpeg' })
+      }
+    }
+  ]
 
-  function initPaintPropertyListeners() {
-    map?.setPaintProperty('states', 'fill-color', ['match', ['feature-state', 'stateColor'], ...Object.entries(colors).flat().filter((item) => item != 'default')])
-    map?.setPaintProperty('states', 'fill-opacity', ['case', ['boolean', ['feature-state', 'clicked'], false], 0.5, 0.0])
-  }
 
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -39,23 +54,21 @@ const MapboxMap = observer(() => {
   }
 
   function mapOnLoad() {
-    map?.on('load', () => {
-      initPaintPropertyListeners()
+    mapboxMapStore.onLoad(() => {
       addSelectedStates()
+      mapboxMapStore.initPaintPropertyListeners()
       map?.on('click', 'states', (e) => handleMapClick(e))
     })
   }
 
   function addSelectedStates() {
     for (const state of stateStore.states) {
-      map?.setFeatureState({
-        source: 'composite',
-        sourceLayer: 'albersusa',
-        id: state.id,
-      }, {
-        clicked: true,
-        stateColor: _.find(territoryStore.territories, (territory: Territory) => territory.id === state.territoryId)?.color
-      });
+      mapboxMapStore.setFeatureState({
+        featureId: state.id, state: {
+          clicked: true,
+          stateColor: _.find(territoryStore.territories, (territory: Territory) => territory.id === state.territoryId)?.color
+        }
+      })
     }
   }
 
@@ -66,31 +79,18 @@ const MapboxMap = observer(() => {
       } else {
         stateStore.removeState({ id: feature.id })
       }
-      map?.setFeatureState({
-        source: 'composite',
-        sourceLayer: 'albersusa',
-        id: feature?.id,
-      }, {
-        clicked: !feature?.state?.clicked || false,
-        stateColor: activeTerritory?.color || '#ff0000'
-      });
+      mapboxMapStore.setFeatureState({
+        featureId: feature.id, state: {
+          clicked: !feature?.state?.clicked || false,
+          stateColor: activeTerritory?.color || '#ff0000'
+        }
+      })
     }
   }, [feature])
   useEffect(() => {
-    mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN
-    setMap(new mapboxgl.Map({
-      container: mapContainer.current!,
-      dragRotate: false,
-      projection: 'mercator' as unknown as Projection,
-      preserveDrawingBuffer: true,
-      style: 'mapbox://styles/brady12/clq5cvwka01bp01p7e2y07cxp',
-      doubleClickZoom: false,
-      minZoom: 3.5,
-      center: [
-        -2.612890767204192, 0.6426634701893619],
-      zoom: 4
-    }))
+    mapboxMapStore.createMap({ mapRef: mapContainer })
   }, [])
+
   useEffect(() => {
     mapOnLoad()
   }, [map])
@@ -101,49 +101,21 @@ const MapboxMap = observer(() => {
     setActiveTerritory(null)
 
   }
-  async function printDocument() {
-    const element = document.getElementById('divToPrint')
+  async function printDocument({ fileExtension = 'pdf' }: { fileExtension?: string }) {
     setDownloadInProgress(true)
-    setTimeout(() => {
-      html2canvas(element!)
-        .then((canvas) => {
-          const imgData = canvas.toDataURL('image/jpeg');
-
-          // Create a PDF
-          const pdf = new jsPDF({
-            orientation: 'landscape'
-          });
-          const pdfWidth = pdf.internal.pageSize.getWidth();
-          const pdfHeight = pdf.internal.pageSize.getHeight();
-
-          const imgWidth = canvas.width;
-          const imgHeight = canvas.height;
-
-          // Calculate scaling factors for width and height
-          const widthScale = pdfWidth / imgWidth;
-          const heightScale = pdfHeight / imgHeight;
-
-          const scale = Math.min(widthScale, heightScale) * 0.9;
-
-          // Calculate new image dimensions to fit within the PDF
-          const newImgWidth = imgWidth * scale;
-          const newImgHeight = imgHeight * scale;
-
-          const x = (pdfWidth - newImgWidth) / 1.1;
-          const y = (pdfHeight - newImgHeight) / 2;
-          pdf.addImage(imgData, 'JPEG', x, y, newImgWidth, newImgHeight);
-          pdf.save('screenshot.pdf');
-        })
-        .catch((error) => {
-          console.error('Error capturing screenshot:', error);
-        }).then(() => setDownloadInProgress(false));
-    }, 1000)
+    if (fileExtension === 'pdf') {
+      new MapExportPDF().export({ onComplete: () => setDownloadInProgress(false) })
+    } else {
+      new MapExportImage(ImageType.PNG).export({ onComplete: () => setDownloadInProgress(false) })
+    }
+  
   }
   return (
     <>
       <div className="flex gap-x-4 ml-10">
         <Button onClick={() => clearData()} label="Clear Data" className="bg-slate-500 text-white" />
-        <Button onClick={() => printDocument()} label="Save to PDF" className="bg-green-500 text-white" icon="pi pi-file-pdf" />
+        <SplitButton label="Export to PDF" className="bg-green-500 text-white" icon="pi pi-file-pdf" onClick={() => printDocument({ fileExtension: 'pdf' })} model={exportItems} />
+        {/* <Button onClick={() => printDocument({ fileExtension: 'pdf' })} label="Save to PDF" className="bg-green-500 text-white" icon="pi pi-file-pdf" /> */}
       </div>
       <div id="divToPrint" className="flex flex-wrap gap-y-5 justify-around mt-8">
         <div ref={mapContainer} className="w-7/12" style={{ height: 700 }} />
