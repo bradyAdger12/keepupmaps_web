@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite";
-import mapboxgl, { MapboxGeoJSONFeature, Projection } from "mapbox-gl";
+import { MapboxGeoJSONFeature} from "mapbox-gl";
 import { useContext, useEffect, useState, useRef } from "react";
 import TerritoryAdmin from "../territory/TerritoryAdmin";
 import { Territory } from "../../stores/territories";
@@ -8,8 +8,6 @@ import { MapboxMapContext, StateContext, TerritoryContext } from "../../stores/s
 import { State } from "../../stores/states";
 import { Button } from "primereact/button";
 import _ from 'lodash'
-import jsPDF from 'jspdf'
-import html2canvas from 'html2canvas'
 import { SplitButton } from "primereact/splitbutton";
 import { ImageType, MapExportImage, MapExportPDF } from "../../lib/MapAssetExport";
 const MapboxMap = observer(() => {
@@ -115,7 +113,6 @@ const MapboxMap = observer(() => {
       <div className="flex gap-x-4 ml-10">
         <Button onClick={() => clearData()} label="Clear Data" className="bg-slate-500 text-white" />
         <SplitButton label="Export to PDF" className="bg-green-500 text-white" icon="pi pi-file-pdf" onClick={() => printDocument({ fileExtension: 'pdf' })} model={exportItems} />
-        {/* <Button onClick={() => printDocument({ fileExtension: 'pdf' })} label="Save to PDF" className="bg-green-500 text-white" icon="pi pi-file-pdf" /> */}
       </div>
       <div id="divToPrint" className="flex flex-wrap gap-y-5 justify-around mt-8">
         <div ref={mapContainer} className="w-7/12" style={{ height: 700 }} />
