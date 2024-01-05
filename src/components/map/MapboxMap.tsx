@@ -28,7 +28,7 @@ const MapboxMap = observer(() => {
       }
     },
     {
-      label: 'Export to JPEG',
+      label: 'Export to JPE',
       icon: 'pi pi-file-jpeg',
       command: () => {
         printDocument({ fileExtension: 'jpeg' })
