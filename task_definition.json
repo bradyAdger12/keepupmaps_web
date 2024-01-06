@@ -1,5 +1,4 @@
 {
-    "taskDefinitionArn": "arn:aws:ecs:us-east-2:391287955410:task-definition/keepupmaps_web:3",
     "containerDefinitions": [
         {
             "name": "keepupmaps-web",
@@ -53,9 +52,7 @@
     "family": "keepupmaps_web",
     "executionRoleArn": "arn:aws:iam::391287955410:role/ecsTaskExecutionRole",
     "networkMode": "awsvpc",
-    "revision": 3,
     "volumes": [],
-    "status": "ACTIVE",
     "requiresAttributes": [
         {
             "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
@@ -83,10 +80,6 @@
         }
     ],
     "placementConstraints": [],
-    "compatibilities": [
-        "EC2",
-        "FARGATE"
-    ],
     "requiresCompatibilities": [
         "FARGATE"
     ],
@@ -96,7 +89,5 @@
         "cpuArchitecture": "X86_64",
         "operatingSystemFamily": "LINUX"
     },
-    "registeredAt": "2024-01-06T01:19:46.517Z",
-    "registeredBy": "arn:aws:iam::391287955410:root",
     "tags": []
 }
