@@ -8,7 +8,7 @@ const RootLayout = observer(() => {
 
   const toolbarStart = (
     <>
-      <Link to={`/`}>KeepUp Maps</Link>
+      <Link to={`/`}>KeepUp Map</Link>
     </>
   )
   const toolbarEnd = (
