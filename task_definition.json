@@ -1,0 +1,102 @@
+{
+    "taskDefinitionArn": "arn:aws:ecs:us-east-2:391287955410:task-definition/keepupmaps_web:3",
+    "containerDefinitions": [
+        {
+            "name": "keepupmaps-web",
+            "image": "public.ecr.aws/k3a3u8l3/keepupmaps:latest",
+            "cpu": 0,
+            "portMappings": [
+                {
+                    "name": "keepupmaps-web-9001-tcp",
+                    "containerPort": 9001,
+                    "hostPort": 9001,
+                    "protocol": "tcp",
+                    "appProtocol": "http"
+                }
+            ],
+            "essential": true,
+            "environment": [
+                {
+                    "name": "VITE_MAPBOX_TOKEN",
+                    "value": "pk.eyJ1IjoiYnJhZHkxMiIsImEiOiJjbHE0YTVmdW4wNTUyMnBvNmt3bGJpbTVqIn0.ZaFQS57lW-z8EW8M9rFYzw"
+                },
+                {
+                    "name": "VITE_SCHEMA_VERSION",
+                    "value": "v1.1"
+                }
+            ],
+            "environmentFiles": [],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "ulimits": [],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-create-group": "true",
+                    "awslogs-group": "/ecs/keepupmaps_web",
+                    "awslogs-region": "us-east-2",
+                    "awslogs-stream-prefix": "ecs"
+                },
+                "secretOptions": []
+            },
+            "healthCheck": {
+                "command": [
+                    "CMD-SHELL",
+                    "curl -f http://localhost:9001 || exit 1"
+                ],
+                "interval": 30,
+                "timeout": 5,
+                "retries": 3
+            }
+        }
+    ],
+    "family": "keepupmaps_web",
+    "executionRoleArn": "arn:aws:iam::391287955410:role/ecsTaskExecutionRole",
+    "networkMode": "awsvpc",
+    "revision": 3,
+    "volumes": [],
+    "status": "ACTIVE",
+    "requiresAttributes": [
+        {
+            "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.24"
+        },
+        {
+            "name": "ecs.capability.execution-role-awslogs"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+        },
+        {
+            "name": "ecs.capability.container-health-check"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+        },
+        {
+            "name": "ecs.capability.task-eni"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.29"
+        }
+    ],
+    "placementConstraints": [],
+    "compatibilities": [
+        "EC2",
+        "FARGATE"
+    ],
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "1024",
+    "memory": "3072",
+    "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+    },
+    "registeredAt": "2024-01-06T01:19:46.517Z",
+    "registeredBy": "arn:aws:iam::391287955410:root",
+    "tags": []
+}
