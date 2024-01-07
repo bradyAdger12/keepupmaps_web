@@ -41,7 +41,7 @@
             "healthCheck": {
                 "command": [
                     "CMD-SHELL",
-                    "curl -f http://localhost:9001 || exit 1"
+                    "curl -f http://localhost:9001/healthcheck || exit 1"
                 ],
                 "interval": 30,
                 "timeout": 5,
