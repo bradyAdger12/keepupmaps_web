@@ -23,7 +23,7 @@ EXPOSE 9001
 
 # Health Check
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
-    CMD curl -f http://localhost:9001 || exit 1
+    CMD curl -f http://localhost:9001/healthcheck || exit 1
 
 # Set the command to start the app
 CMD ["yarn", "dev"]

@@ -22,6 +22,7 @@ import "primereact/resources/themes/lara-light-indigo/theme.css"
 import "primereact/resources/primereact.min.css"
 import 'primeicons/primeicons.css'
 import './index.css'
+import Healthcheck from './pages/Healthcheck.tsx'
 
 const router = createBrowserRouter([
   {
@@ -30,6 +31,7 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       { index: true, element: <HomePage /> },
+      { path: '/healthcheck', element: <Healthcheck />},
       {
         path: "/auth/register",
         async lazy() {
