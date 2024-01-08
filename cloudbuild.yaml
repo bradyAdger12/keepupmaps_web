@@ -1,3 +1,2 @@
 options:
-  logging:
-    logsBucket: gs://your-logs-bucket-name
+  logging: CLOUD_LOGGING_ONLY
