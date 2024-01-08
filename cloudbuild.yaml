@@ -13,7 +13,7 @@ steps:
       - 'keepupmaps-web'
       - '--image=gcr.io/carbon-feat-410602/github.com/bradyadger12/keepupmaps_web:latest'
       - '--platform=managed'
-      - '--region=REGION'
+      - '--region=us-central1'
 
 options:
   logging:
