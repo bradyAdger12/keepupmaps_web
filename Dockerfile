@@ -19,8 +19,6 @@ EXPOSE 9001
 # Build the React app (replace 'npm run build' with your build command)
 RUN yarn build
 
-EXPOSE 9001
-
 # Health Check
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
     CMD curl -f http://localhost:9001/healthcheck || exit 1
