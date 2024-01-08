@@ -14,3 +14,8 @@ steps:
       - '--image=gcr.io/carbon-feat-410602/github.com/bradyadger12/keepupmaps_web:latest'
       - '--platform=managed'
       - '--region=REGION'
+
+options:
+  logging:
+    # Specify the logs bucket here
+    logsBucket: CLOUD_LOGGING_ONLY
