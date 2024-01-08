@@ -1,24 +1,20 @@
-steps:
-  # Build the Docker image
+  steps:
+  # Build the container image
   - name: 'gcr.io/cloud-builders/docker'
     args: ['build', '-t', 'gcr.io/carbon-feat-410602/github.com/bradyadger12/keepupmaps_web:$COMMIT-SHA', '.']
-  # Push the Docker image to Google Container Registry
+  # Push the container image to Container Registry
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/carbon-feat-410602/github.com/bradyadger12/keepupmaps_web:$COMMIT_SHA']
-  # Deploy to Cloud Run
-  - name: 'gcr.io/google.com/cloudsdktool/cloudsdk'
+    args: ['push', 'gcr.io/carbon-feat-410602/github.com/bradyadger12/keepupmaps_web:$COMMIT-SHA']
+  # Deploy container image to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
     - 'run'
     - 'deploy'
     - 'keepupmaps-web'
     - '--image'
-    - 'gcr.io/carbon-feat-410602/github.com/bradyadger12/keepupmaps_web:$COMMIT_SHA'
+    - 'gcr.io/carbon-feat-410602/github.com/bradyadger12/keepupmaps_web:$COMMIT-SHA'
     - '--region'
     - 'us-central1'
-images:
-- 'gcr.io/carbon-feat-410602/github.com/bradyadger12/keepupmaps_web:$COMMIT_SHA'
-options:
-  logging:
-    # Specify the logs bucket here
-    logsBucket: CLOUD_LOGGING_ONLY
+  images:
+  - 'gcr.io/carbon-feat-410602/github.com/bradyadger12/keepupmaps_web:$COMMIT-SHA'
