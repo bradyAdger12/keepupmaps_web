@@ -9,15 +9,15 @@ steps:
   - name: 'gcr.io/google.com/cloudsdktool/cloudsdk'
     entrypoint: gcloud
     args:
-      - 'run'
-      - 'deploy'
-      - 'keepupmaps-web'
-      - '--image'
-      - 'gcr.io/carbon-feat-410602/github.com/bradyadger12/keepupmaps_web:$COMMIT_SHA'
-      - '--region'
-      - 'us-central1'
-  images:
+    - 'run'
+    - 'deploy'
+    - 'keepupmaps-web'
+    - '--image'
     - 'gcr.io/carbon-feat-410602/github.com/bradyadger12/keepupmaps_web:$COMMIT_SHA'
+    - '--region'
+    - 'us-central1'
+  images:
+  - 'gcr.io/carbon-feat-410602/github.com/bradyadger12/keepupmaps_web:$COMMIT_SHA'
 options:
   logging:
     # Specify the logs bucket here
