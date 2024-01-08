@@ -7,13 +7,7 @@ steps:
     args: ['push', 'gcr.io/carbon-feat-410602/github.com/bradyadger12/keepupmaps_web:latest']
   # Deploy to Cloud Run
   - name: 'gcr.io/cloud-builders/gcloud'
-    args:
-      - 'run'
-      - 'deploy'
-      - 'keepupmaps-web'
-      - '--image=gcr.io/carbon-feat-410602/github.com/bradyadger12/keepupmaps_web:latest'
-      - '--platform=managed'
-      - '--region=us-central1'
+    args: ['run', 'deploy', 'keepupmaps-web', '--image=gcr.io/carbon-feat-410602/github.com/bradyadger12/keepupmaps_web:latest', '--platform=managed', '--region=us-central1']
 options:
   logging:
     # Specify the logs bucket here
