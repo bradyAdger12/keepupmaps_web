@@ -22,6 +22,19 @@ export class MapStore {
     }
     return response.data?.insert_maps_one as Map
   }
+  async deleteMap({ mapId }: { mapId: string }) {
+    const response = await client.mutation(graphql(`
+      mutation DeleteMap($mapId: uuid!) {
+        delete_maps_by_pk(id: $mapId) {
+          id
+        }
+      }
+    `), { mapId })
+    if (response.error) {
+      throw new Error(response.error.message)
+    }
+    return true
+  }
   async fetchMaps() {
     const response = await client.query(graphql(`
       query FetchMaps {
