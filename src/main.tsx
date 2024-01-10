@@ -26,14 +26,14 @@ import 'primeicons/primeicons.css'
 import './index.css'
 import Healthcheck from './pages/Healthcheck.tsx'
 import RegisterPage from './pages/RegisterPage.tsx'
-import LoginPage from './pages/RegisterPage.tsx'
+import LoginPage from './pages/LoginPage.tsx'
 import ForgotPasswordPage from './pages/ForgotPasswordPage.tsx'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route errorElement={<ErrorPage />}>
       <Route path="/" element={<RootLayout><HomePage /></RootLayout>} />
-      <Route path="healthcheck" element={<LoginExcludedRoute><Healthcheck /></LoginExcludedRoute>} />
+      <Route path="/healthcheck" element={<LoginExcludedRoute><Healthcheck /></LoginExcludedRoute>} />
       <Route path="auth/register" element={<LoginExcludedRoute><RegisterPage /></LoginExcludedRoute>} />
       <Route path="auth/login" element={<LoginExcludedRoute><LoginPage /></LoginExcludedRoute>} />
       <Route path="auth/forgot" element={<LoginExcludedRoute><ForgotPasswordPage /></LoginExcludedRoute>} />

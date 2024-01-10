@@ -24,6 +24,8 @@ const documents = {
     "\n    mutation VerifyEmail($code: String!) {\n      verifyEmail(code: $code)\n    }": types.VerifyEmailDocument,
     "\n    mutation ResetPassword($code: String!, $email: String!, $newPassword: String!) {\n      resetPassword(code: $code, email: $email, newPassword: $newPassword)\n    }": types.ResetPasswordDocument,
     "\n    mutation SubmitContactForm($name: String!, $email: String!, $message: String!) {\n      insert_contact_form_submissions(objects: {email: $email, message: $message, name: $name}) {\n        affected_rows\n      }\n    }\n    ": types.SubmitContactFormDocument,
+    "\n      mutation CreateMap($map: maps_insert_input!) {\n        insert_maps_one(object: $map) {\n          id\n          name\n          created_at\n          updated_at\n        }\n      }\n    ": types.CreateMapDocument,
+    "\n      query FetchMaps {\n        maps {\n         name\n         id\n         created_at\n         updated_at\n        }\n      }\n    ": types.FetchMapsDocument,
 };
 
 /**
@@ -84,6 +86,14 @@ export function graphql(source: "\n    mutation ResetPassword($code: String!, $e
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n    mutation SubmitContactForm($name: String!, $email: String!, $message: String!) {\n      insert_contact_form_submissions(objects: {email: $email, message: $message, name: $name}) {\n        affected_rows\n      }\n    }\n    "): (typeof documents)["\n    mutation SubmitContactForm($name: String!, $email: String!, $message: String!) {\n      insert_contact_form_submissions(objects: {email: $email, message: $message, name: $name}) {\n        affected_rows\n      }\n    }\n    "];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n      mutation CreateMap($map: maps_insert_input!) {\n        insert_maps_one(object: $map) {\n          id\n          name\n          created_at\n          updated_at\n        }\n      }\n    "): (typeof documents)["\n      mutation CreateMap($map: maps_insert_input!) {\n        insert_maps_one(object: $map) {\n          id\n          name\n          created_at\n          updated_at\n        }\n      }\n    "];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n      query FetchMaps {\n        maps {\n         name\n         id\n         created_at\n         updated_at\n        }\n      }\n    "): (typeof documents)["\n      query FetchMaps {\n        maps {\n         name\n         id\n         created_at\n         updated_at\n        }\n      }\n    "];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

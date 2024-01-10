@@ -19,7 +19,7 @@ const RootLayout: React.FC<PropsWithChildren> = observer(({ children }) => {
     {
       auth.isAuthenticated ?
         <>
-          <Button style={{backgroundColor: 'var(--primary-color)'}} label="Logout" onClick={() => auth.logout()} />
+          <Button className="text-white" style={{backgroundColor: 'var(--primary-color)'}} label="Logout" onClick={() => auth.logout()} />
           <Link style={{ marginLeft: 25 }} to={`me/profile`}>Profile</Link>
         </>
         :
