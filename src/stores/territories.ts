@@ -7,14 +7,22 @@ export class TerritoryStore {
     makeAutoObservable(this)
   }
 
-  saveTerritories() {
-    // localStorage.setItem('territory', JSON.stringify(this.territories.map((territory) => { return { name: territory.name, color: territory.color, note: territory.note, id: territory.id }})))
-  }
-
-  clearTerritories() {
-    // localStorage.removeItem(localStorageModelName)
-    // this.territories = []
-    // console.log(this.territories)
+  async deleteTerritory ({ territoryId }: { territoryId: string }): Promise<Territory> {
+    const response = await client.mutation(graphql(`
+    mutation DeleteTerritory ($territoryId: uuid!) {
+      delete_territories_by_pk(id: $territoryId) {
+        id
+        states {
+          id
+          state_map_id
+        }
+      }
+    }
+  `), { territoryId })
+    if (response.error) {
+      throw new Error(response.error.message)
+    }
+    return response.data?.delete_territories_by_pk as Territory
   }
 
   async updateTerritory({ territoryId, updates }: { territoryId: string, updates: Territories_Set_Input }): Promise<Territory> {
@@ -31,17 +39,23 @@ export class TerritoryStore {
     return response.data?.update_territories_by_pk as Territory
   }
 
-  async fetchTerritories(): Promise<Territory[]> {
+  async fetchTerritories({ mapId }: { mapId: string }): Promise<Territory[]> {
     const response = await client.query(graphql(`
-      query FetchTerritories {
-        territories {
+      query FetchTerritories($mapId: uuid!) {
+        territories(where: { map_id: { _eq: $mapId }}) {
           id
           name
           color
           note
+          updated_at
+          states {
+            id
+            name
+            state_map_id
+          }
         }
       }
-    `), {})
+    `), { mapId })
     if (response.error) {
       throw new Error(response.error.message)
     }

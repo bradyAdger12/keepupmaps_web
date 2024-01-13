@@ -1,18 +1,21 @@
 import { makeAutoObservable } from 'mobx'
 import { Map, Projection } from 'mapbox-gl';
 import mapboxgl from 'mapbox-gl';
-import { MutableRefObject } from 'react';
 import { colors } from "../lib/Constants";
 export class MapboxMap {
   map?: Map | null | undefined
   constructor() {
     makeAutoObservable(this)
   }
-  createMap({ mapRef }: { mapRef: MutableRefObject<null> }) {
+  removeMap () {
+    this.map?.remove()
+    this.map = null
+  }
+  createMap({ mapRef }: { mapRef: string }) {
     if (!this.map) {
       mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN
       this.map = new mapboxgl.Map({
-        container: mapRef.current!,
+        container: mapRef,
         dragRotate: false,
         projection: 'mercator' as unknown as Projection,
         preserveDrawingBuffer: true,
@@ -38,7 +41,7 @@ export class MapboxMap {
     this.map?.on('load', callback)
   }
 
- initPaintPropertyListeners() {
+  initPaintPropertyListeners() {
     this.map?.setPaintProperty('states', 'fill-color', ['match', ['feature-state', 'stateColor'], ...Object.entries(colors).flat().filter((item) => item != 'default')])
     this.map?.setPaintProperty('states', 'fill-opacity', ['case', ['boolean', ['feature-state', 'clicked'], false], 0.5, 0.0])
   }

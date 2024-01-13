@@ -27,8 +27,12 @@ const documents = {
     "\n      mutation CreateMap($map: maps_insert_input!) {\n        insert_maps_one(object: $map) {\n          id\n          name\n          created_at\n          updated_at\n        }\n      }\n    ": types.CreateMapDocument,
     "\n      mutation DeleteMap($mapId: uuid!) {\n        delete_maps_by_pk(id: $mapId) {\n          id\n        }\n      }\n    ": types.DeleteMapDocument,
     "\n      query FetchMaps {\n        maps {\n         name\n         id\n         created_at\n         updated_at\n        }\n      }\n    ": types.FetchMapsDocument,
+    "\n    mutation DeleteState ($stateMapId: Int!, $mapId: uuid!)  {\n      delete_states_by_pk(state_map_id: $stateMapId, map_id: $mapId) {\n        id\n        name\n        state_map_id\n        territory_id\n      }\n    }\n  ": types.DeleteStateDocument,
+    "\n      query FetchStates($mapId: uuid!) {\n        states(where: { map_id: {_eq: $mapId }}) {\n          id\n          name\n          state_map_id\n          territory {\n            id\n            color\n          }\n        }\n      }\n    ": types.FetchStatesDocument,
+    "\n    mutation CreateState ($name: String!, $stateMapId: Int!, $territoryId: uuid!, $mapId: uuid!, $stateAbbr: String!)  {\n      insert_states_one(object: { name: $name, territory_id: $territoryId, state_map_id: $stateMapId, map_id: $mapId, name_abbreviation: $stateAbbr }) {\n        id\n        name\n        state_map_id\n        territory_id\n      }\n    }\n  ": types.CreateStateDocument,
+    "\n    mutation DeleteTerritory ($territoryId: uuid!) {\n      delete_territories_by_pk(id: $territoryId) {\n        id\n        states {\n          id\n          state_map_id\n        }\n      }\n    }\n  ": types.DeleteTerritoryDocument,
     "\n    mutation UpdateTerritory ($territoryId: uuid!, $updates: territories_set_input) {\n      update_territories_by_pk(pk_columns: { id: $territoryId }, _set: $updates) {\n        id\n      }\n    }\n  ": types.UpdateTerritoryDocument,
-    "\n      query FetchTerritories {\n        territories {\n          id\n          name\n          color\n          note\n        }\n      }\n    ": types.FetchTerritoriesDocument,
+    "\n      query FetchTerritories($mapId: uuid!) {\n        territories(where: { map_id: { _eq: $mapId }}) {\n          id\n          name\n          color\n          note\n          updated_at\n          states {\n            id\n            name\n            state_map_id\n          }\n        }\n      }\n    ": types.FetchTerritoriesDocument,
     "\n      mutation CreateTerritory ($name: String!, $color: String!, $mapId: uuid!)  {\n        insert_territories_one(object: { name: $name, color: $color, map_id: $mapId }) {\n          id\n        }\n      }\n    ": types.CreateTerritoryDocument,
 };
 
@@ -105,11 +109,27 @@ export function graphql(source: "\n      query FetchMaps {\n        maps {\n    
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function graphql(source: "\n    mutation DeleteState ($stateMapId: Int!, $mapId: uuid!)  {\n      delete_states_by_pk(state_map_id: $stateMapId, map_id: $mapId) {\n        id\n        name\n        state_map_id\n        territory_id\n      }\n    }\n  "): (typeof documents)["\n    mutation DeleteState ($stateMapId: Int!, $mapId: uuid!)  {\n      delete_states_by_pk(state_map_id: $stateMapId, map_id: $mapId) {\n        id\n        name\n        state_map_id\n        territory_id\n      }\n    }\n  "];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n      query FetchStates($mapId: uuid!) {\n        states(where: { map_id: {_eq: $mapId }}) {\n          id\n          name\n          state_map_id\n          territory {\n            id\n            color\n          }\n        }\n      }\n    "): (typeof documents)["\n      query FetchStates($mapId: uuid!) {\n        states(where: { map_id: {_eq: $mapId }}) {\n          id\n          name\n          state_map_id\n          territory {\n            id\n            color\n          }\n        }\n      }\n    "];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    mutation CreateState ($name: String!, $stateMapId: Int!, $territoryId: uuid!, $mapId: uuid!, $stateAbbr: String!)  {\n      insert_states_one(object: { name: $name, territory_id: $territoryId, state_map_id: $stateMapId, map_id: $mapId, name_abbreviation: $stateAbbr }) {\n        id\n        name\n        state_map_id\n        territory_id\n      }\n    }\n  "): (typeof documents)["\n    mutation CreateState ($name: String!, $stateMapId: Int!, $territoryId: uuid!, $mapId: uuid!, $stateAbbr: String!)  {\n      insert_states_one(object: { name: $name, territory_id: $territoryId, state_map_id: $stateMapId, map_id: $mapId, name_abbreviation: $stateAbbr }) {\n        id\n        name\n        state_map_id\n        territory_id\n      }\n    }\n  "];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    mutation DeleteTerritory ($territoryId: uuid!) {\n      delete_territories_by_pk(id: $territoryId) {\n        id\n        states {\n          id\n          state_map_id\n        }\n      }\n    }\n  "): (typeof documents)["\n    mutation DeleteTerritory ($territoryId: uuid!) {\n      delete_territories_by_pk(id: $territoryId) {\n        id\n        states {\n          id\n          state_map_id\n        }\n      }\n    }\n  "];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function graphql(source: "\n    mutation UpdateTerritory ($territoryId: uuid!, $updates: territories_set_input) {\n      update_territories_by_pk(pk_columns: { id: $territoryId }, _set: $updates) {\n        id\n      }\n    }\n  "): (typeof documents)["\n    mutation UpdateTerritory ($territoryId: uuid!, $updates: territories_set_input) {\n      update_territories_by_pk(pk_columns: { id: $territoryId }, _set: $updates) {\n        id\n      }\n    }\n  "];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n      query FetchTerritories {\n        territories {\n          id\n          name\n          color\n          note\n        }\n      }\n    "): (typeof documents)["\n      query FetchTerritories {\n        territories {\n          id\n          name\n          color\n          note\n        }\n      }\n    "];
+export function graphql(source: "\n      query FetchTerritories($mapId: uuid!) {\n        territories(where: { map_id: { _eq: $mapId }}) {\n          id\n          name\n          color\n          note\n          updated_at\n          states {\n            id\n            name\n            state_map_id\n          }\n        }\n      }\n    "): (typeof documents)["\n      query FetchTerritories($mapId: uuid!) {\n        territories(where: { map_id: { _eq: $mapId }}) {\n          id\n          name\n          color\n          note\n          updated_at\n          states {\n            id\n            name\n            state_map_id\n          }\n        }\n      }\n    "];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

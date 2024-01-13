@@ -652,7 +652,8 @@ export type Mutation_RootDelete_StatesArgs = {
 
 /** mutation root */
 export type Mutation_RootDelete_States_By_PkArgs = {
-  id: Scalars['uuid']['input'];
+  map_id: Scalars['uuid']['input'];
+  state_map_id: Scalars['Int']['input'];
 };
 
 
@@ -1060,7 +1061,8 @@ export type Query_RootStates_AggregateArgs = {
 
 
 export type Query_RootStates_By_PkArgs = {
-  id: Scalars['uuid']['input'];
+  map_id: Scalars['uuid']['input'];
+  state_map_id: Scalars['Int']['input'];
 };
 
 
@@ -1138,6 +1140,9 @@ export type States = {
   __typename?: 'states';
   created_at: Scalars['timestamptz']['output'];
   id: Scalars['uuid']['output'];
+  /** An object relationship */
+  map: Maps;
+  map_id: Scalars['uuid']['output'];
   name: Scalars['String']['output'];
   name_abbreviation: Scalars['String']['output'];
   state_map_id: Scalars['Int']['output'];
@@ -1228,6 +1233,8 @@ export type States_Bool_Exp = {
   _or?: InputMaybe<Array<States_Bool_Exp>>;
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
+  map?: InputMaybe<Maps_Bool_Exp>;
+  map_id?: InputMaybe<Uuid_Comparison_Exp>;
   name?: InputMaybe<String_Comparison_Exp>;
   name_abbreviation?: InputMaybe<String_Comparison_Exp>;
   state_map_id?: InputMaybe<Int_Comparison_Exp>;
@@ -1238,7 +1245,7 @@ export type States_Bool_Exp = {
 
 /** unique or primary key constraints on table "states" */
 export enum States_Constraint {
-  /** unique or primary key constraint on columns "id" */
+  /** unique or primary key constraint on columns "map_id", "state_map_id" */
   StatesPkey = 'states_pkey'
 }
 
@@ -1251,6 +1258,8 @@ export type States_Inc_Input = {
 export type States_Insert_Input = {
   created_at?: InputMaybe<Scalars['timestamptz']['input']>;
   id?: InputMaybe<Scalars['uuid']['input']>;
+  map?: InputMaybe<Maps_Obj_Rel_Insert_Input>;
+  map_id?: InputMaybe<Scalars['uuid']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
   name_abbreviation?: InputMaybe<Scalars['String']['input']>;
   state_map_id?: InputMaybe<Scalars['Int']['input']>;
@@ -1264,6 +1273,7 @@ export type States_Max_Fields = {
   __typename?: 'states_max_fields';
   created_at?: Maybe<Scalars['timestamptz']['output']>;
   id?: Maybe<Scalars['uuid']['output']>;
+  map_id?: Maybe<Scalars['uuid']['output']>;
   name?: Maybe<Scalars['String']['output']>;
   name_abbreviation?: Maybe<Scalars['String']['output']>;
   state_map_id?: Maybe<Scalars['Int']['output']>;
@@ -1275,6 +1285,7 @@ export type States_Max_Fields = {
 export type States_Max_Order_By = {
   created_at?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  map_id?: InputMaybe<Order_By>;
   name?: InputMaybe<Order_By>;
   name_abbreviation?: InputMaybe<Order_By>;
   state_map_id?: InputMaybe<Order_By>;
@@ -1287,6 +1298,7 @@ export type States_Min_Fields = {
   __typename?: 'states_min_fields';
   created_at?: Maybe<Scalars['timestamptz']['output']>;
   id?: Maybe<Scalars['uuid']['output']>;
+  map_id?: Maybe<Scalars['uuid']['output']>;
   name?: Maybe<Scalars['String']['output']>;
   name_abbreviation?: Maybe<Scalars['String']['output']>;
   state_map_id?: Maybe<Scalars['Int']['output']>;
@@ -1298,6 +1310,7 @@ export type States_Min_Fields = {
 export type States_Min_Order_By = {
   created_at?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  map_id?: InputMaybe<Order_By>;
   name?: InputMaybe<Order_By>;
   name_abbreviation?: InputMaybe<Order_By>;
   state_map_id?: InputMaybe<Order_By>;
@@ -1325,6 +1338,8 @@ export type States_On_Conflict = {
 export type States_Order_By = {
   created_at?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  map?: InputMaybe<Maps_Order_By>;
+  map_id?: InputMaybe<Order_By>;
   name?: InputMaybe<Order_By>;
   name_abbreviation?: InputMaybe<Order_By>;
   state_map_id?: InputMaybe<Order_By>;
@@ -1335,7 +1350,8 @@ export type States_Order_By = {
 
 /** primary key columns input for table: states */
 export type States_Pk_Columns_Input = {
-  id: Scalars['uuid']['input'];
+  map_id: Scalars['uuid']['input'];
+  state_map_id: Scalars['Int']['input'];
 };
 
 /** select columns of table "states" */
@@ -1344,6 +1360,8 @@ export enum States_Select_Column {
   CreatedAt = 'created_at',
   /** column name */
   Id = 'id',
+  /** column name */
+  MapId = 'map_id',
   /** column name */
   Name = 'name',
   /** column name */
@@ -1360,6 +1378,7 @@ export enum States_Select_Column {
 export type States_Set_Input = {
   created_at?: InputMaybe<Scalars['timestamptz']['input']>;
   id?: InputMaybe<Scalars['uuid']['input']>;
+  map_id?: InputMaybe<Scalars['uuid']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
   name_abbreviation?: InputMaybe<Scalars['String']['input']>;
   state_map_id?: InputMaybe<Scalars['Int']['input']>;
@@ -1412,6 +1431,7 @@ export type States_Stream_Cursor_Input = {
 export type States_Stream_Cursor_Value_Input = {
   created_at?: InputMaybe<Scalars['timestamptz']['input']>;
   id?: InputMaybe<Scalars['uuid']['input']>;
+  map_id?: InputMaybe<Scalars['uuid']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
   name_abbreviation?: InputMaybe<Scalars['String']['input']>;
   state_map_id?: InputMaybe<Scalars['Int']['input']>;
@@ -1436,6 +1456,8 @@ export enum States_Update_Column {
   CreatedAt = 'created_at',
   /** column name */
   Id = 'id',
+  /** column name */
+  MapId = 'map_id',
   /** column name */
   Name = 'name',
   /** column name */
@@ -1622,7 +1644,8 @@ export type Subscription_RootStates_AggregateArgs = {
 
 
 export type Subscription_RootStates_By_PkArgs = {
-  id: Scalars['uuid']['input'];
+  map_id: Scalars['uuid']['input'];
+  state_map_id: Scalars['Int']['input'];
 };
 
 
@@ -2544,6 +2567,39 @@ export type FetchMapsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type FetchMapsQuery = { __typename?: 'query_root', maps: Array<{ __typename?: 'maps', name: string, id: any, created_at: any, updated_at: any }> };
 
+export type DeleteStateMutationVariables = Exact<{
+  stateMapId: Scalars['Int']['input'];
+  mapId: Scalars['uuid']['input'];
+}>;
+
+
+export type DeleteStateMutation = { __typename?: 'mutation_root', delete_states_by_pk?: { __typename?: 'states', id: any, name: string, state_map_id: number, territory_id: any } | null };
+
+export type FetchStatesQueryVariables = Exact<{
+  mapId: Scalars['uuid']['input'];
+}>;
+
+
+export type FetchStatesQuery = { __typename?: 'query_root', states: Array<{ __typename?: 'states', id: any, name: string, state_map_id: number, territory: { __typename?: 'territories', id: any, color?: string | null } }> };
+
+export type CreateStateMutationVariables = Exact<{
+  name: Scalars['String']['input'];
+  stateMapId: Scalars['Int']['input'];
+  territoryId: Scalars['uuid']['input'];
+  mapId: Scalars['uuid']['input'];
+  stateAbbr: Scalars['String']['input'];
+}>;
+
+
+export type CreateStateMutation = { __typename?: 'mutation_root', insert_states_one?: { __typename?: 'states', id: any, name: string, state_map_id: number, territory_id: any } | null };
+
+export type DeleteTerritoryMutationVariables = Exact<{
+  territoryId: Scalars['uuid']['input'];
+}>;
+
+
+export type DeleteTerritoryMutation = { __typename?: 'mutation_root', delete_territories_by_pk?: { __typename?: 'territories', id: any, states: Array<{ __typename?: 'states', id: any, state_map_id: number }> } | null };
+
 export type UpdateTerritoryMutationVariables = Exact<{
   territoryId: Scalars['uuid']['input'];
   updates?: InputMaybe<Territories_Set_Input>;
@@ -2552,10 +2608,12 @@ export type UpdateTerritoryMutationVariables = Exact<{
 
 export type UpdateTerritoryMutation = { __typename?: 'mutation_root', update_territories_by_pk?: { __typename?: 'territories', id: any } | null };
 
-export type FetchTerritoriesQueryVariables = Exact<{ [key: string]: never; }>;
+export type FetchTerritoriesQueryVariables = Exact<{
+  mapId: Scalars['uuid']['input'];
+}>;
 
 
-export type FetchTerritoriesQuery = { __typename?: 'query_root', territories: Array<{ __typename?: 'territories', id: any, name: string, color?: string | null, note?: string | null }> };
+export type FetchTerritoriesQuery = { __typename?: 'query_root', territories: Array<{ __typename?: 'territories', id: any, name: string, color?: string | null, note?: string | null, updated_at: any, states: Array<{ __typename?: 'states', id: any, name: string, state_map_id: number }> }> };
 
 export type CreateTerritoryMutationVariables = Exact<{
   name: Scalars['String']['input'];
@@ -2581,6 +2639,10 @@ export const SubmitContactFormDocument = {"kind":"Document","definitions":[{"kin
 export const CreateMapDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateMap"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"map"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"maps_insert_input"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"insert_maps_one"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"object"},"value":{"kind":"Variable","name":{"kind":"Name","value":"map"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"updated_at"}}]}}]}}]} as unknown as DocumentNode<CreateMapMutation, CreateMapMutationVariables>;
 export const DeleteMapDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteMap"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"mapId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"uuid"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"delete_maps_by_pk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"mapId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<DeleteMapMutation, DeleteMapMutationVariables>;
 export const FetchMapsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FetchMaps"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"maps"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"updated_at"}}]}}]}}]} as unknown as DocumentNode<FetchMapsQuery, FetchMapsQueryVariables>;
+export const DeleteStateDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteState"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"stateMapId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"mapId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"uuid"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"delete_states_by_pk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"state_map_id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"stateMapId"}}},{"kind":"Argument","name":{"kind":"Name","value":"map_id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"mapId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"state_map_id"}},{"kind":"Field","name":{"kind":"Name","value":"territory_id"}}]}}]}}]} as unknown as DocumentNode<DeleteStateMutation, DeleteStateMutationVariables>;
+export const FetchStatesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FetchStates"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"mapId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"uuid"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"states"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"map_id"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"mapId"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"state_map_id"}},{"kind":"Field","name":{"kind":"Name","value":"territory"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"color"}}]}}]}}]}}]} as unknown as DocumentNode<FetchStatesQuery, FetchStatesQueryVariables>;
+export const CreateStateDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateState"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"name"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"stateMapId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"territoryId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"uuid"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"mapId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"uuid"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"stateAbbr"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"insert_states_one"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"object"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"Variable","name":{"kind":"Name","value":"name"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"territory_id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"territoryId"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"state_map_id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"stateMapId"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"map_id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"mapId"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"name_abbreviation"},"value":{"kind":"Variable","name":{"kind":"Name","value":"stateAbbr"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"state_map_id"}},{"kind":"Field","name":{"kind":"Name","value":"territory_id"}}]}}]}}]} as unknown as DocumentNode<CreateStateMutation, CreateStateMutationVariables>;
+export const DeleteTerritoryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteTerritory"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"territoryId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"uuid"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"delete_territories_by_pk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"territoryId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"states"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"state_map_id"}}]}}]}}]}}]} as unknown as DocumentNode<DeleteTerritoryMutation, DeleteTerritoryMutationVariables>;
 export const UpdateTerritoryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateTerritory"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"territoryId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"uuid"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"updates"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"territories_set_input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"update_territories_by_pk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"pk_columns"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"territoryId"}}}]}},{"kind":"Argument","name":{"kind":"Name","value":"_set"},"value":{"kind":"Variable","name":{"kind":"Name","value":"updates"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<UpdateTerritoryMutation, UpdateTerritoryMutationVariables>;
-export const FetchTerritoriesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FetchTerritories"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"territories"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"color"}},{"kind":"Field","name":{"kind":"Name","value":"note"}}]}}]}}]} as unknown as DocumentNode<FetchTerritoriesQuery, FetchTerritoriesQueryVariables>;
+export const FetchTerritoriesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"FetchTerritories"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"mapId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"uuid"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"territories"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"map_id"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"mapId"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"color"}},{"kind":"Field","name":{"kind":"Name","value":"note"}},{"kind":"Field","name":{"kind":"Name","value":"updated_at"}},{"kind":"Field","name":{"kind":"Name","value":"states"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"state_map_id"}}]}}]}}]}}]} as unknown as DocumentNode<FetchTerritoriesQuery, FetchTerritoriesQueryVariables>;
 export const CreateTerritoryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateTerritory"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"name"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"color"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"mapId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"uuid"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"insert_territories_one"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"object"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"Variable","name":{"kind":"Name","value":"name"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"color"},"value":{"kind":"Variable","name":{"kind":"Name","value":"color"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"map_id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"mapId"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<CreateTerritoryMutation, CreateTerritoryMutationVariables>;

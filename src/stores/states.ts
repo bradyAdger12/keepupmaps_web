@@ -1,40 +1,63 @@
-import { makeAutoObservable } from 'mobx' 
-import { Map } from 'mapbox-gl';
-import _ from 'lodash'
-export class State {
-  states: State[] = localStorage.getItem('states') ? JSON.parse(localStorage.getItem('states')!).map((item: unknown) => item as State) : []
-  name: string | null = null;
-  id: string | number | undefined = undefined;
-  territoryId: string | null = null
-  note: string | null | undefined = null
+import { makeAutoObservable } from 'mobx'
+import { States as State } from '../gql/graphql';
+import { client } from '../graphql';
+import { graphql } from '../gql';
+export class StateStore {
   constructor() {
     makeAutoObservable(this)
   }
-  clearStates ({ map }: { map?: Map | null }) {
-    for (const state of this.states) {
-      map?.setFeatureState({
-        source: 'composite',
-        sourceLayer: 'albersusa',
-        id: state.id,
-      }, {
-        clicked: false
-      });
+
+  async deleteState({ stateMapId, mapId }: { stateMapId: number, mapId: string }): Promise<State> {
+    const response = await client.mutation(graphql(`
+    mutation DeleteState ($stateMapId: Int!, $mapId: uuid!)  {
+      delete_states_by_pk(state_map_id: $stateMapId, map_id: $mapId) {
+        id
+        name
+        state_map_id
+        territory_id
+      }
     }
-    localStorage.removeItem('states')
-    this.states = []
+  `), { stateMapId, mapId })
+    if (response.error) {
+      throw new Error(response.error.message)
+    }
+    return response.data?.delete_states_by_pk as State
   }
 
-  saveStates () {
-    localStorage.setItem('states', JSON.stringify(this.states))
+  async fetchStates({ mapId }: { mapId: string }): Promise<State[]> {
+    const response = await client.query(graphql(`
+      query FetchStates($mapId: uuid!) {
+        states(where: { map_id: {_eq: $mapId }}) {
+          id
+          name
+          state_map_id
+          territory {
+            id
+            color
+          }
+        }
+      }
+    `), { mapId })
+    if (response.error) {
+      throw new Error(response.error.message)
+    }
+    return response.data?.states as State[]
   }
 
-  removeState({ id }: { id: string | number | undefined }) {
-    _.remove(this.states, (item) => item.id === id)
-    localStorage.setItem('states', JSON.stringify(this.states))
-  }
-
-  addState({ state }: { state:  State }) {
-    this.states.push(state);
-    localStorage.setItem('states', JSON.stringify(this.states.map((item) => { return { name: item.name, id: item.id, territoryId: item.territoryId } as State})))
+  async addState({ name, stateMapId, territoryId, mapId, stateAbbr }: { name: string, stateMapId: number, territoryId: string, mapId: string, stateAbbr: string }): Promise<State> {
+    const response = await client.mutation(graphql(`
+    mutation CreateState ($name: String!, $stateMapId: Int!, $territoryId: uuid!, $mapId: uuid!, $stateAbbr: String!)  {
+      insert_states_one(object: { name: $name, territory_id: $territoryId, state_map_id: $stateMapId, map_id: $mapId, name_abbreviation: $stateAbbr }) {
+        id
+        name
+        state_map_id
+        territory_id
+      }
+    }
+  `), { name, stateMapId, territoryId, mapId, stateAbbr })
+    if (response.error) {
+      throw new Error(response.error.message)
+    }
+    return response.data?.insert_states_one as State
   }
 }

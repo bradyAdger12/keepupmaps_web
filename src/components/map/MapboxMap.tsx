@@ -1,24 +1,38 @@
 import { observer } from "mobx-react-lite";
-import { MapboxGeoJSONFeature} from "mapbox-gl";
-import { useContext, useEffect, useState, useRef } from "react";
+import { MapboxGeoJSONFeature } from "mapbox-gl";
+import { useContext, useEffect, useState } from "react";
 import TerritoryAdmin from "../territory/TerritoryAdmin";
-import { Territory } from "../../stores/territories";
+import { Territories as Territory } from "../../gql/graphql";
 
-import { MapboxMapContext, StateContext, TerritoryContext } from "../../stores/stores";
-import { State } from "../../stores/states";
-import { Button } from "primereact/button";
+import { MapboxMapContext, StateContext } from "../../stores/stores";
 import _ from 'lodash'
 import { SplitButton } from "primereact/splitbutton";
 import { ImageType, MapExportImage, MapExportPDF } from "../../lib/MapAssetExport";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useParams } from "react-router-dom";
+import { DateTime } from "luxon";
 const MapboxMap = observer(() => {
+  const { map_id } = useParams() as { map_id: string }
   const stateStore = useContext(StateContext)
-  const territoryStore = useContext(TerritoryContext)
   const mapboxMapStore = useContext(MapboxMapContext)
-  const mapContainer = useRef(null);
   const map = mapboxMapStore.map
+  const [stateSelectedTimestamp, setStateSelectedTimestamp] = useState(DateTime.now())
   const [activeTerritory, setActiveTerritory] = useState<Territory | null>()
   const [downloadInProgress, setDownloadInProgress] = useState(false)
   const [feature, setFeature] = useState<MapboxGeoJSONFeature | null>()
+  const deleteStateMutation = useMutation({
+    mutationKey: ['deleteState'],
+    mutationFn: ({ stateMapId }: { stateMapId: number }) => stateStore.deleteState({ stateMapId, mapId: map_id }),
+  })
+  const createStateMutation = useMutation({
+    mutationKey: ['createState'],
+    mutationFn: ({ feature, territory }: { feature: MapboxGeoJSONFeature | null | undefined, territory: Territory }) => stateStore.addState({ name: feature?.properties?.state_name, stateAbbr: feature?.properties?.state_abbrev, stateMapId: feature?.id as number, territoryId: territory.id, mapId: map_id }),
+  })
+  const { data: states } = useQuery({
+    queryKey: ['fetchStates', map_id],
+    initialData: [],
+    queryFn: () => stateStore.fetchStates({ mapId: map_id })
+  })
   const exportItems = [
     {
       label: 'Export to PNG',
@@ -53,52 +67,72 @@ const MapboxMap = observer(() => {
 
   function mapOnLoad() {
     mapboxMapStore.onLoad(() => {
-      addSelectedStates()
       mapboxMapStore.initPaintPropertyListeners()
       map?.on('click', 'states', (e) => handleMapClick(e))
     })
   }
 
   function addSelectedStates() {
-    for (const state of stateStore.states) {
-      mapboxMapStore.setFeatureState({
-        featureId: state.id, state: {
-          clicked: true,
-          stateColor: _.find(territoryStore.territories, (territory: Territory) => territory.id === state.territoryId)?.color
+    if (states && mapboxMapStore.map?.isStyleLoaded()) {
+      console.log(states)
+      for (const state of states) {
+        mapboxMapStore.setFeatureState({
+          featureId: state.state_map_id, state: {
+            clicked: true,
+            stateColor: state.territory.color
+          }
+        })
+      }
+    }
+
+  }
+
+  async function updateFeature(feature: MapboxGeoJSONFeature | null | undefined) {
+    try {
+      if (feature?.id) {
+        mapboxMapStore.setFeatureState({
+          featureId: feature.id, state: {
+            clicked: !feature?.state?.clicked || false,
+            stateColor: activeTerritory?.color || '#ff0000'
+          }
+        })
+        let updateState = false
+        if (!feature?.state.clicked && !_.find(states, (state) => state.id === feature.id) && activeTerritory) {
+          await createStateMutation.mutateAsync({ feature, territory: activeTerritory })
+          updateState = true
+        } else if (feature?.state.clicked) {
+          await deleteStateMutation.mutateAsync({ stateMapId: feature.id as number })
+          updateState = true
         }
-      })
+        if (updateState) {
+          setStateSelectedTimestamp(DateTime.now())
+        }
+      }
+    } catch (e) {
+      console.log(e)
     }
   }
 
   useEffect(() => {
-    if (feature?.id && activeTerritory) {
-      if (!feature?.state.clicked && !_.find(stateStore.states, (state) => state.id === feature.id)) {
-        stateStore.addState({ state: { name: feature.properties?.state_name, id: feature.id, territoryId: activeTerritory.id } as State })
-      } else {
-        stateStore.removeState({ id: feature.id })
-      }
-      mapboxMapStore.setFeatureState({
-        featureId: feature.id, state: {
-          clicked: !feature?.state?.clicked || false,
-          stateColor: activeTerritory?.color || '#ff0000'
-        }
-      })
-    }
+    updateFeature(feature)
   }, [feature])
   useEffect(() => {
-    mapboxMapStore.createMap({ mapRef: mapContainer })
+    mapboxMapStore.createMap({ mapRef: `map_${map_id}` })
+    return () => { mapboxMapStore.removeMap() }
   }, [])
 
   useEffect(() => {
-    mapOnLoad()
-  }, [map])
+    setTimeout(() => {
+      addSelectedStates()
+    }, 1000);
 
-  function clearData() {
-    territoryStore.clearTerritories()
-    stateStore.clearStates({ map })
-    setActiveTerritory(null)
+  }, [states])
 
-  }
+  useEffect(() => {
+    if (map) {
+      mapOnLoad()
+    }
+  }, [map, states])
   async function printDocument({ fileExtension = 'pdf' }: { fileExtension?: string }) {
     setDownloadInProgress(true)
     if (fileExtension === 'pdf') {
@@ -106,18 +140,17 @@ const MapboxMap = observer(() => {
     } else {
       new MapExportImage(ImageType.PNG).export({ onComplete: () => setDownloadInProgress(false) })
     }
-  
+
   }
   return (
     <>
       <div className="flex gap-x-4 ml-10">
-        <Button onClick={() => clearData()} label="Clear Data" className="bg-slate-500 text-white" />
         <SplitButton label="Export to PDF" className="bg-green-500 text-white" icon="pi pi-file-pdf" onClick={() => printDocument({ fileExtension: 'pdf' })} model={exportItems} />
       </div>
       <div id="divToPrint" className="flex flex-wrap gap-y-5 justify-around mt-8">
-        <div ref={mapContainer} className="w-7/12" style={{ height: 700 }} />
+        <div id={`map_${map_id}`} className="w-7/12" style={{ height: 700 }} />
         <div className="w-4/12">
-          <TerritoryAdmin onTerritorySelected={(e: Territory) => { setActiveTerritory(e) }} downloadInProgress={downloadInProgress} map={map} />
+          <TerritoryAdmin onTerritorySelected={(e: Territory) => { setActiveTerritory(e) }} downloadInProgress={downloadInProgress} map={map} stateSelectedTimestamp={stateSelectedTimestamp?.millisecond} />
         </div>
       </div>
     </>
