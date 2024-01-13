@@ -42,7 +42,7 @@ const MapsList = observer(() => {
               </tr>
             </thead>
             <tbody>
-              {maps?.map((map: Map) => <tr key={map.id} className="cursor-pointer" onClick={() => navigate(`/map/${map.id}`)} >
+              {maps?.map((map: Map) => <tr key={map.id} className="cursor-pointer hover:bg-gray-100" onClick={() => navigate(`/map/${map.id}`)} >
                 <td>{map.id}</td>
                 <td>{map.name}</td>
                 <td>{map.created_at}</td>

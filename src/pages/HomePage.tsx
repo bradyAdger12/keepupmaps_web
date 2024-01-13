@@ -7,10 +7,14 @@ const HomePage = observer(() => {
   const auth = useContext(AuthContext)
   return (
     <>
-      {auth.isAuthenticated ? <MapsList /> : 
-      <div>
-        Login to get started
-      </div> 
+      {auth.isAuthenticated ? <MapsList /> :
+        <div className="flex gap-x-20">
+          <div>
+            <h3 className="font-bold">
+              Login/Register to create your first map today!
+            </h3>
+          </div>
+        </div>
       }
     </>
   )

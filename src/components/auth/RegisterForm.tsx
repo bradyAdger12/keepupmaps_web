@@ -6,13 +6,8 @@ import validator from 'validator'
 import {
   useMutation,
 } from '@tanstack/react-query'
-
-import { Button } from 'primereact/button'
 import { Message } from 'primereact/message'
-import { InputText } from 'primereact/inputtext'
-import { Password } from 'primereact/password'
-import { Checkbox } from 'primereact/checkbox'
-
+import SpinningLoading from '../tools/SpinningLoading'
 const RegisterForm = observer(() => {
   const auth = useContext(AuthContext)
   const navigate = useNavigate()
@@ -21,10 +16,9 @@ const RegisterForm = observer(() => {
   const [emailValid, setEmailValid] = useState(true)
   const [passwordValid, setPasswordValid] = useState(true)
   const [password, setPassword] = useState('')
-  const [termsAccepted, setTermsAccepted] = useState(false)
 
   const handleRegister = async () => {
-    if (termsAccepted && emailValid && passwordValid) {
+    if (emailValid && passwordValid) {
       handleRegisterMutation.mutate()
     }
   }
@@ -57,21 +51,17 @@ const RegisterForm = observer(() => {
   }
 
   return (
-    <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+    <div  className="flex flex-col items-center">
       <div>
-        <h1>Register</h1>
+        <h1 className="text-h1 font-bold mb-5">Register</h1>
       </div>
 
       <div style={{marginTop: '1em'}}>
-        <InputText className={emailValid ? '' : 'p-invalid'} placeholder="Email" value={email} onChange={handleEmailChange} />
+        <input className="input" placeholder="Email" value={email} onChange={handleEmailChange} />
       </div>
       
       <div style={{marginTop: '1em'}}>
-        <Password className={passwordValid ? '' : 'p-invalid'} placeholder="Password" value={password} onChange={handlePasswordChange} feedback={false} onKeyUp={(e) => {if(e.key === 'Enter'){handleRegister()}}} />
-      </div>
-
-      <div style={{marginTop: '1em'}}>
-        <Checkbox onChange={e => setTermsAccepted(e.checked)} checked={termsAccepted}></Checkbox> I accept the legal stuff!
+        <input type="password" className="input" placeholder="Password" value={password} onChange={handlePasswordChange} onKeyUp={(e) => {if(e.key === 'Enter'){handleRegister()}}} />
       </div>
 
       { handleRegisterMutation.isError && 
@@ -80,8 +70,10 @@ const RegisterForm = observer(() => {
         </div>
       }
 
-      <div style={{marginTop: '1em'}}>
-        <Button style={{backgroundColor: 'var(--primary-color)'}} label="Register" onClick={handleRegister} disabled={handleRegisterMutation.isLoading || !termsAccepted || !email || !password || !emailValid} loading={handleRegisterMutation.isLoading} />  
+      <div className='mt-8'>
+        <button className="btn btn-primary" onClick={handleRegister} disabled={handleRegisterMutation.isLoading || !email || !password || !emailValid}>
+          Register { handleRegisterMutation.isLoading && <SpinningLoading /> }
+        </button>
       </div>
     </div>
   )
