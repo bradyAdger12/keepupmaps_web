@@ -8,8 +8,6 @@ import {
 
 import { Button } from 'primereact/button'
 import { Message } from 'primereact/message';
-import { InputText } from 'primereact/inputtext'
-import { Password } from 'primereact/password'
 
 const LoginForm = observer(() => {
   const auth = useContext(AuthContext)
@@ -30,17 +28,17 @@ const LoginForm = observer(() => {
   }
 
   return (
-    <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+    <div className="flex flex-col items-center">
       <div>
-        <h1>Login</h1>
+        <h1 className="text-h1 font-bold mb-5">Login</h1>
       </div>
 
       <div style={{marginTop: '1em'}}>
-        <InputText placeholder="Email" value={email} onChange={(e) => setEmail(e.currentTarget.value)} />
+        <input className="input" placeholder="Email" value={email} onChange={(e) => setEmail(e.currentTarget.value)} />
       </div>
       
       <div style={{marginTop: '1em'}}>
-        <Password placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} feedback={false} onKeyUp={(e) => {if(e.key === 'Enter'){handleLogin()}}} />
+        <input className="input" type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} onKeyUp={(e) => {if(e.key === 'Enter'){handleLogin()}}} />
       </div>
 
       { handleLoginMutation.isError && 
@@ -49,7 +47,7 @@ const LoginForm = observer(() => {
         </div>
       }
 
-      <div style={{marginTop: '1em'}}>
+      <div className="mt-10">
         <Button style={{backgroundColor: 'var(--primary-color)'}} label="Login" onClick={handleLogin} disabled={handleLoginMutation.isLoading} loading={handleLoginMutation.isLoading} />  
       </div>
     </div>

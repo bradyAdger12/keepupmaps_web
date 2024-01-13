@@ -10,6 +10,7 @@ const RootLayout: React.FC<PropsWithChildren> = observer(({ children }) => {
   const auth = useContext(AuthContext)
   const toolbarStart = (
     <>
+      {/* <img src="/src/assets/keepup_maps_logo.png" /> */}
       <Link to={`/`}>KeepUp Maps</Link>
     </>
   )
@@ -31,7 +32,7 @@ const RootLayout: React.FC<PropsWithChildren> = observer(({ children }) => {
   return (
     <>
       <Toolbar className="app-toolbar" style={{width: '100%'}} start={toolbarStart} end={toolbarEnd} />
-      <div id="detail">
+      <div id="detail" className="bg-white h-screen">
           { children }
       </div>
     </>

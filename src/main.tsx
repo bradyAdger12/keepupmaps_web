@@ -28,6 +28,8 @@ import Healthcheck from './pages/Healthcheck.tsx'
 import RegisterPage from './pages/RegisterPage.tsx'
 import LoginPage from './pages/LoginPage.tsx'
 import ForgotPasswordPage from './pages/ForgotPasswordPage.tsx'
+import MapPage from './pages/MapPage.tsx'
+import LoginRequiredRoute from './components/auth/LoginRequiredRoute.tsx'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -37,106 +39,10 @@ const router = createBrowserRouter(
       <Route path="auth/register" element={<LoginExcludedRoute><RegisterPage /></LoginExcludedRoute>} />
       <Route path="auth/login" element={<LoginExcludedRoute><LoginPage /></LoginExcludedRoute>} />
       <Route path="auth/forgot" element={<LoginExcludedRoute><ForgotPasswordPage /></LoginExcludedRoute>} />
+      <Route path="map/:map_id" element={<LoginRequiredRoute><RootLayout><MapPage /></RootLayout></LoginRequiredRoute>} />
     </Route>
   )
 )
-
-// const router = createBrowserRouter([
-//   {
-//     path: "/",
-//     element: <RootLayout />,
-//     errorElement: <ErrorPage />,
-//     children: [
-//       { index: true, element: <HomePage /> },
-//       { path: '/healthcheck', element: <Healthcheck /> },
-//       {
-//         path: "/auth/register",
-//         async lazy() {
-//           const RegisterPage = await import('./pages/RegisterPage.tsx')
-//           return {
-//             Component: () => {
-//               return (
-//                 <LoginExcludedRoute>
-//                   <RegisterPage.default />
-//                 </LoginExcludedRoute>
-//               );
-//             },
-//           }
-//         }
-//       },
-//       {
-//         path: "/auth/login",
-//         async lazy() {
-//           const LoginPage = await import('./pages/LoginPage.tsx')
-//           return {
-//             Component: () => {
-//               return (
-//                 <LoginExcludedRoute>
-//                   <LoginPage.default />
-//                 </LoginExcludedRoute>
-//               );
-//             },
-//           }
-//         }
-//       },
-//       {
-//         path: "/auth/forgot",
-//         async lazy() {
-//           const ForgotPasswordPage = await import('./pages/ForgotPasswordPage.tsx')
-//           return {
-//             Component: () => {
-//               return (
-//                 <LoginExcludedRoute>
-//                   <ForgotPasswordPage.default />
-//                 </LoginExcludedRoute>
-//               );
-//             },
-//           }
-//         }
-//       },
-//       {
-//         path: "/me/profile",
-//         async lazy() {
-//           const ProfilePage = await import('./pages/ProfilePage.tsx')
-//           return {
-//             Component: () => {
-//               return (
-//                 <ProfilePage.default />
-//               );
-//             },
-//           }
-//         }
-//       },
-//       {
-//         path: "/verify-email/:code",
-//         async lazy() {
-//           const VerifyEmailLandingPage = await import('./pages/VerifyEmailLandingPage.tsx')
-//           return {
-//             Component: VerifyEmailLandingPage.default
-//           }
-//         }
-//       },
-//       {
-//         path: "/reset-password/:code",
-//         async lazy() {
-//           const ResetPasswordPage = await import('./pages/ResetPasswordPage.tsx')
-//           return {
-//             Component: ResetPasswordPage.default
-//           }
-//         }
-//       },
-//       {
-//         path: "/contact",
-//         async lazy() {
-//           const ContactPage = await import('./pages/ContactPage.tsx')
-//           return {
-//             Component: ContactPage.default
-//           }
-//         }
-//       },
-//     ]
-//   },
-// ]);
 
 const queryClient = new QueryClient()
 if (import.meta.env.VITE_SCHEMA_VERSION && localStorage.getItem('version') != import.meta.env.VITE_SCHEMA_VERSION) {

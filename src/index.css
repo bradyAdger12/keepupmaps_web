@@ -18,18 +18,41 @@
   -webkit-text-size-adjust: 100%;
 }
 
+.modal-backdrop {
+  opacity: 70%;
+}
+
+.label {
+  color: gray;
+  font-size: 12px;
+  
+}
+
 a {
   font-weight: 500;
-  color: #646cff;
   text-decoration: inherit;
 }
-a:hover {
-  color: #535bf2;
+
+.input, .select, .textarea {
+  border-bottom: 1px solid gray;
+  border-radius: 0;
+}
+
+.input:focus, .select:focus, .textarea:focus {
+  outline: none;
+  /* Remove the default focus outline */
+  border-bottom: 1px solid gray;
+  border-top: none;
+  border-right: none;
+  border-left: none;
+  /* Retain or adjust the border styles as needed */
+
 }
 
 body {
   margin: 0;
   display: flex;
+  background-color: theme('colors.background');
   align-items: start;
   min-width: 320px;
   min-height: 100vh;
@@ -48,12 +71,15 @@ button {
   font-weight: 500;
   font-family: inherit;
   background-color: #1a1a1a;
+  color: white;
   cursor: pointer;
   transition: border-color 0.25s;
 }
+
 button:hover {
   border-color: #646cff;
 }
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
@@ -64,6 +90,8 @@ button:focus-visible {
 }
 
 .app-toolbar {
+  background-color: white;
+  border-bottom: 0.5px solid rgba(0, 0, 0, 0.10);
   border-radius: 0;
 }
 
@@ -76,9 +104,11 @@ button:focus-visible {
     color: #213547;
     background-color: #ffffff;
   }
+
   a:hover {
     color: #747bff;
   }
+
   button {
     background-color: #f9f9f9;
   }

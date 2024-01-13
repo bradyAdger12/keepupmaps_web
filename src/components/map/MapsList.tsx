@@ -5,10 +5,12 @@ import { AuthContext, MapContext } from "../../stores/stores";
 import { Maps as Map } from "../../gql/graphql";
 import DeleteModal from "../tools/DeleteModal";
 import SpinningLoading from "../tools/SpinningLoading";
+import { useNavigate } from "react-router-dom";
 
 const MapsList = observer(() => {
   const mapStore = useContext(MapContext)
   const authStore = useContext(AuthContext)
+  const navigate = useNavigate()
   const [modelToDelete, setModelToDelete] = useState<Map | null>(null)
   const deleteObjectModalID = 'delete_object_modal'
   const { data: maps, isLoading: loadingMaps, refetch: refetchMaps } = useQuery({
@@ -40,11 +42,11 @@ const MapsList = observer(() => {
               </tr>
             </thead>
             <tbody>
-              {maps?.map((map: Map) => <tr key={map.id}>
+              {maps?.map((map: Map) => <tr key={map.id} className="cursor-pointer" onClick={() => navigate(`/map/${map.id}`)} >
                 <td>{map.id}</td>
                 <td>{map.name}</td>
                 <td>{map.created_at}</td>
-                <td><button className="btn btn-circle btn-sm bg-error border-none" onClick={() => { (document.getElementById(deleteObjectModalID) as HTMLDialogElement).showModal(); setModelToDelete({ ...map }) }}>{deleteMapMutation.isLoading ? <SpinningLoading /> : <span className="fa fa-trash text-white"></span>}</button></td>
+                <td><button className="btn btn-circle btn-sm bg-error border-none" onClick={(e) => { e.stopPropagation(); (document.getElementById(deleteObjectModalID) as HTMLDialogElement).showModal(); setModelToDelete({ ...map }) }}>{deleteMapMutation.isLoading ? <SpinningLoading /> : <span className="fa fa-trash text-white"></span>}</button></td>
               </tr>)}
             </tbody>
           </table>
