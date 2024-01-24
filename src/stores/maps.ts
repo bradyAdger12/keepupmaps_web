@@ -35,6 +35,22 @@ export class MapStore {
     }
     return true
   }
+  async fetchMap({ mapId }: { mapId: string }): Promise<Map> {
+    const response = await client.query(graphql(`
+      query FetchMap($mapId: uuid!) {
+        maps_by_pk(id: $mapId) {
+         name
+         id
+         created_at
+         updated_at
+        }
+      }
+    `), { mapId })
+    if (response.error) {
+      throw new Error(response.error.message)
+    }
+    return response.data?.maps_by_pk as Map
+  }
   async fetchMaps() {
     const response = await client.query(graphql(`
       query FetchMaps {

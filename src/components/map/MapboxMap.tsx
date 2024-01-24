@@ -4,7 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import TerritoryAdmin from "../territory/TerritoryAdmin";
 import { Territories as Territory } from "../../gql/graphql";
 
-import { MapboxMapContext, StateContext } from "../../stores/stores";
+import { MapContext, MapboxMapContext, StateContext } from "../../stores/stores";
 import _ from 'lodash'
 import { SplitButton } from "primereact/splitbutton";
 import { ImageType, MapExportImage, MapExportPDF } from "../../lib/MapAssetExport";
@@ -14,8 +14,9 @@ import { DateTime } from "luxon";
 const MapboxMap = observer(() => {
   const { map_id } = useParams() as { map_id: string }
   const stateStore = useContext(StateContext)
+  const mapStore = useContext(MapContext)
   const mapboxMapStore = useContext(MapboxMapContext)
-  const map = mapboxMapStore.map
+  const mapboxMap = mapboxMapStore.map
   const [stateSelectedTimestamp, setStateSelectedTimestamp] = useState(DateTime.now())
   const [activeTerritory, setActiveTerritory] = useState<Territory | null>()
   const [downloadInProgress, setDownloadInProgress] = useState(false)
@@ -27,6 +28,10 @@ const MapboxMap = observer(() => {
   const createStateMutation = useMutation({
     mutationKey: ['createState'],
     mutationFn: ({ feature, territory }: { feature: MapboxGeoJSONFeature | null | undefined, territory: Territory }) => stateStore.addState({ name: feature?.properties?.state_name, stateAbbr: feature?.properties?.state_abbrev, stateMapId: feature?.id as number, territoryId: territory.id, mapId: map_id }),
+  })
+  const { data: map } = useQuery({
+    queryKey: ['fetchMap'],
+    queryFn: () => mapStore.fetchMap({ mapId: map_id })
   })
   const { data: states } = useQuery({
     queryKey: ['fetchStates', map_id],
@@ -54,7 +59,7 @@ const MapboxMap = observer(() => {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function handleMapClick(e: any) {
-    const features = map?.queryRenderedFeatures(e.point);
+    const features = mapboxMap?.queryRenderedFeatures(e.point);
     const feature = _.find(features, (item) => item.sourceLayer == 'albersusa')
     // eslint-disable-next-line react-hooks/rules-of-hooks
     if (feature) {
@@ -68,7 +73,7 @@ const MapboxMap = observer(() => {
   function mapOnLoad() {
     mapboxMapStore.onLoad(() => {
       mapboxMapStore.initPaintPropertyListeners()
-      map?.on('click', 'states', (e) => handleMapClick(e))
+      mapboxMap?.on('click', 'states', (e) => handleMapClick(e))
     })
   }
 
@@ -89,7 +94,7 @@ const MapboxMap = observer(() => {
 
   async function updateFeature(feature: MapboxGeoJSONFeature | null | undefined) {
     try {
-      if (feature?.id) {
+      if (feature?.id && activeTerritory) {
         mapboxMapStore.setFeatureState({
           featureId: feature.id, state: {
             clicked: !feature?.state?.clicked || false,
@@ -129,10 +134,10 @@ const MapboxMap = observer(() => {
   }, [states])
 
   useEffect(() => {
-    if (map) {
+    if (mapboxMap) {
       mapOnLoad()
     }
-  }, [map, states])
+  }, [mapboxMap, states])
   async function printDocument({ fileExtension = 'pdf' }: { fileExtension?: string }) {
     setDownloadInProgress(true)
     if (fileExtension === 'pdf') {
@@ -144,13 +149,14 @@ const MapboxMap = observer(() => {
   }
   return (
     <>
-      <div className="flex gap-x-4 ml-10">
+      <div className="flex items-center gap-x-4 ml-10">
+        {map && <h2 className="font-bold mr-3">{map.name}</h2>}
         <SplitButton label="Export to PDF" className="bg-green-500 text-white" icon="pi pi-file-pdf" onClick={() => printDocument({ fileExtension: 'pdf' })} model={exportItems} />
       </div>
       <div id="divToPrint" className="flex flex-wrap gap-y-5 justify-around mt-8">
         <div id={`map_${map_id}`} className="w-7/12" style={{ height: 700 }} />
         <div className="w-4/12">
-          <TerritoryAdmin onTerritorySelected={(e: Territory) => { setActiveTerritory(e) }} downloadInProgress={downloadInProgress} map={map} stateSelectedTimestamp={stateSelectedTimestamp?.millisecond} />
+          <TerritoryAdmin onTerritorySelected={(e: Territory) => { setActiveTerritory(e) }} downloadInProgress={downloadInProgress} map={mapboxMap} stateSelectedTimestamp={stateSelectedTimestamp?.millisecond} />
         </div>
       </div>
     </>

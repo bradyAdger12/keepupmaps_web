@@ -30,6 +30,7 @@ import LoginPage from './pages/LoginPage.tsx'
 import ForgotPasswordPage from './pages/ForgotPasswordPage.tsx'
 import MapPage from './pages/MapPage.tsx'
 import LoginRequiredRoute from './components/auth/LoginRequiredRoute.tsx'
+import ProfilePage from './pages/ProfilePage.tsx'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -37,6 +38,7 @@ const router = createBrowserRouter(
       <Route path="/" element={<RootLayout><HomePage /></RootLayout>} />
       <Route path="/healthcheck" element={<LoginExcludedRoute><Healthcheck /></LoginExcludedRoute>} />
       <Route path="auth/register" element={<LoginExcludedRoute><RegisterPage /></LoginExcludedRoute>} />
+      <Route path="me/profile" element={<LoginRequiredRoute><ProfilePage /></LoginRequiredRoute>} />
       <Route path="auth/login" element={<LoginExcludedRoute><LoginPage /></LoginExcludedRoute>} />
       <Route path="auth/forgot" element={<LoginExcludedRoute><ForgotPasswordPage /></LoginExcludedRoute>} />
       <Route path="map/:map_id" element={<LoginRequiredRoute><RootLayout><MapPage /></RootLayout></LoginRequiredRoute>} />

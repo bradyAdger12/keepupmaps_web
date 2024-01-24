@@ -26,6 +26,7 @@ const documents = {
     "\n    mutation SubmitContactForm($name: String!, $email: String!, $message: String!) {\n      insert_contact_form_submissions(objects: {email: $email, message: $message, name: $name}) {\n        affected_rows\n      }\n    }\n    ": types.SubmitContactFormDocument,
     "\n      mutation CreateMap($map: maps_insert_input!) {\n        insert_maps_one(object: $map) {\n          id\n          name\n          created_at\n          updated_at\n        }\n      }\n    ": types.CreateMapDocument,
     "\n      mutation DeleteMap($mapId: uuid!) {\n        delete_maps_by_pk(id: $mapId) {\n          id\n        }\n      }\n    ": types.DeleteMapDocument,
+    "\n      query FetchMap($mapId: uuid!) {\n        maps_by_pk(id: $mapId) {\n         name\n         id\n         created_at\n         updated_at\n        }\n      }\n    ": types.FetchMapDocument,
     "\n      query FetchMaps {\n        maps {\n         name\n         id\n         created_at\n         updated_at\n        }\n      }\n    ": types.FetchMapsDocument,
     "\n    mutation DeleteState ($stateMapId: Int!, $mapId: uuid!)  {\n      delete_states_by_pk(state_map_id: $stateMapId, map_id: $mapId) {\n        id\n        name\n        state_map_id\n        territory_id\n      }\n    }\n  ": types.DeleteStateDocument,
     "\n      query FetchStates($mapId: uuid!) {\n        states(where: { map_id: {_eq: $mapId }}) {\n          id\n          name\n          state_map_id\n          territory {\n            id\n            color\n          }\n        }\n      }\n    ": types.FetchStatesDocument,
@@ -102,6 +103,10 @@ export function graphql(source: "\n      mutation CreateMap($map: maps_insert_in
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n      mutation DeleteMap($mapId: uuid!) {\n        delete_maps_by_pk(id: $mapId) {\n          id\n        }\n      }\n    "): (typeof documents)["\n      mutation DeleteMap($mapId: uuid!) {\n        delete_maps_by_pk(id: $mapId) {\n          id\n        }\n      }\n    "];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n      query FetchMap($mapId: uuid!) {\n        maps_by_pk(id: $mapId) {\n         name\n         id\n         created_at\n         updated_at\n        }\n      }\n    "): (typeof documents)["\n      query FetchMap($mapId: uuid!) {\n        maps_by_pk(id: $mapId) {\n         name\n         id\n         created_at\n         updated_at\n        }\n      }\n    "];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
