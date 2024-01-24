@@ -58,7 +58,7 @@ const MapsList = observer(() => {
       }
       <dialog id={createMapModalID} className="modal">
         <div className="modal-box">
-          <h3 className="font-bold text-lg">Create a amp</h3>
+          <h3 className="font-bold text-lg">Create a map</h3>
           <label className="label mt-4">Name</label>
           <input className="input" placeholder="Enter a name for your map..." value={mapName} onChange={e => setMapName(e.target.value)} onKeyUp={(e) => { if(e.key === 'Enter') createMapMutation.mutate() }} />
           <div className="modal-action">
